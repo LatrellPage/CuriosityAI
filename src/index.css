@@ -1,4 +1,9 @@
-/* CSS Reset */
+:root {
+  --pri-color: #abbad0;
+}
+
+
+
 html, body, div, span, applet, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
 a, abbr, acronym, address, big, cite, code,
@@ -47,19 +52,152 @@ table {
 }
 
 .sidebar{
-  z-index: 2;
+  position: fixed;
   width: 20%;
   display: block;
   height: 100vh;
-  border-top-right-radius: 10px;
-  border-bottom-right-radius: 10px;
-  background-color: #abbad0;
+  background-color: black;
+  color: white;
+}
+
+.sidebar-header{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 10%;
+  color: white;
+}
+
+.new-chatBTN{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 90%;
+  border-radius: 10px;
+  height: 60%;
+  border: 0.2px solid whitesmoke;
+  cursor: pointer;
+}
+
+.recent-chats-container{
+  overflow-y: auto;
+  overflow-x: hidden;
+  margin-top: 2rem;
+  width: 92%;
+  height: 70%;
+  padding: 10px;
+}
+
+.sidebar-footer {
+  border-top: 0.3px solid rgba(245, 245, 245, 0.548);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 85%;
+  height: 13%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.profile-img-container{
+  background-color: #ddd;
+  border-radius: 2px;
+  object-fit: contain;
+  width: 2.5rem;
+  height: 2.5rem;
+  margin-left: -4rem;
+}
+
+.AiProfile {
+  background-color: #b3eec9;
+  border-radius: 2px;
+  object-fit: contain;
+  width: 2.5rem;
+  height: 2.5rem;
+  margin-left: -4rem;
+}
+
+.profile-name{
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-left: 1rem;
+}
+
+/* Styling for the scrollbar in .recent-chats-container */
+.recent-chats-container::-webkit-scrollbar {
+  width: 8px; /* Adjust the width of the scrollbar */
+}
+
+.recent-chats-container::-webkit-scrollbar-thumb {
+  background-color: whitesmoke; /* Thumb color */
+  border-radius: 8px; /* Rounded thumb */
+}
+
+.recent-chats-container::-webkit-scrollbar-track {
+  background-color: inherit; /* Track color */
+}
+
+.recent-chats-container::-webkit-scrollbar-thumb:vertical {
+  height: 5px; 
+}
+
+input{
+  outline: none;
+  display: none;
+}
+
+.recent-chat{
+  display: flex;
+  justify-content: space-between; 
+  align-items: center;
+  width: 100%;
+  border-radius: 10px;
+  height: 3rem;
+}
+
+.recent-chat:hover{
+  background-color: var(--pri-color);
+}
+
+.chat-title{
+  width: 57%;
+  white-space: nowrap; /* Prevent text from wrapping to the next line */
+  overflow: hidden; /* Hide any overflow text */
+  text-overflow:clip; /* Show an ellipsis (...) when text overflows */
 }
 
 .chat-container {
   height: 100vh;
   width: 100%;
   overflow-y: scroll;
+}
+
+.convo-container{
+  width: 80%;
+  height: 80%;
+  float: right;
+  overflow-x: hidden;
+}
+
+#AI-container{
+  background-color: #dddddd5c;
+}
+
+.message-container{
+  padding: 25px;
+  display: flex;
+  justify-content: center;
+  border-bottom: 0.1px solid rgba(0, 0, 0, 0.150);
+  width: 100%;
+  height: fit-content;
+}
+
+.message{
+  margin-left: 10px;
+  width: 50%;
+  padding: 10px;
+  height: fit-content;
 }
 
 .bottom-container{
@@ -69,13 +207,13 @@ table {
   position: fixed;
   height: 20%;
   width: 80%;
+  box-shadow: 0px 0px 10px 2px white;
 }
 
 .text-flex-positioner{
   width: 100%;
   height: 100%;
   display: flex;
-  align-items: center;
   justify-content: center;
 }
 
@@ -84,13 +222,13 @@ table {
   width: 60%;
   height: 40%;
   border-radius: 10px;
-  border: 1px solid rgba(0, 0, 0, 0.551);
+  box-shadow: 0 0 10px rgba(0, 0.5, 0.5, 0.5);
 }
 
 .text-area{
   width: 90%;
   height: 30%;
-  padding: 15px;
+  padding: 20px;
   text-indent: 1;
   font-size: 1rem;
   outline: none;
@@ -99,15 +237,25 @@ table {
   border-radius: 10px;
 }
 
-.submit-button {
+.submit-button-container {
   width: 10%;
-  display: solid;
-  background-color: blue;
-  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ddd;
   float: right;
   border-top-right-radius: 10px;
   border-bottom-right-radius: 10px;
   height: 100%;
+}
+
+#sendBTN{
+  font-size: 2.5rem;
+  color: #b3eec9;
+}
+
+.text-area::-webkit-scrollbar {
+  display: none; /* Hide the scrollbar in WebKit-based browsers */
 }
 
 .text-container::placeholder{
@@ -115,6 +263,8 @@ table {
   margin-top: auto;
   margin-bottom: auto;
 }
+
+
 
 @media screen and (max-width: 1024px){
   .sidebar{
@@ -127,5 +277,29 @@ table {
 
   .text-container{
     width: 80%;
+  }
+}
+
+@media screen and (max-width: 768px){
+
+  .text-area{
+    height: 20%;
+  }
+
+  .text-container{
+    height: 40%;
+  }
+
+  .convo-container{
+    width: 100%;
+  }
+
+  .message-container{
+    padding: 10px;
+  }
+
+  #sendBTN{
+    font-size: 2rem;
+    margin-right: 15px;
   }
 }
