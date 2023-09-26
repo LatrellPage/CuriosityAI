@@ -148,8 +148,7 @@ input{
 }
 
 .recent-chat{
-  display: flex;
-  justify-content: space-between; 
+  display: flex; 
   align-items: center;
   width: 100%;
   border-radius: 10px;
@@ -161,7 +160,8 @@ input{
 }
 
 .chat-title{
-  width: 57%;
+  margin-left: 1rem;
+  width: 80%;
   white-space: nowrap; /* Prevent text from wrapping to the next line */
   overflow: hidden; /* Hide any overflow text */
   text-overflow:clip; /* Show an ellipsis (...) when text overflows */
@@ -175,7 +175,7 @@ input{
 
 .convo-container{
   width: 80%;
-  height: 80%;
+  height: 87%;
   float: right;
   overflow-x: hidden;
 }
@@ -205,7 +205,7 @@ input{
   bottom: 0;
   right: 0;
   position: fixed;
-  height: 20%;
+  height: 13%;
   width: 80%;
   box-shadow: 10px 10px 10px 2px white;
 }
@@ -220,7 +220,7 @@ input{
 .text-container{
   display: flex;
   width: 60%;
-  height: 40%;
+  height: 62%;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0.5, 0.5, 0.5);
 }
@@ -287,7 +287,7 @@ input{
   }
 
   .text-container{
-    height: 40%;
+    height: 60%;
   }
 
   .convo-container{
