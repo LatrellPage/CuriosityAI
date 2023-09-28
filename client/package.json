@@ -6,6 +6,7 @@
     "@fortawesome/fontawesome-svg-core": "^6.4.2",
     "@fortawesome/free-solid-svg-icons": "^6.4.2",
     "@fortawesome/react-fontawesome": "^0.2.0",
+    "bulma": "^0.9.4",
     "cra-template": "1.2.0",
     "font-awesome": "^4.7.0",
     "react": "^18.2.0",
