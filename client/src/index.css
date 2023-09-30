@@ -74,6 +74,7 @@ td {
 	vertical-align: baseline;
 }
 
+
 /* HTML5 display-role reset for older browsers */
 article,
 aside,
@@ -323,6 +324,7 @@ input {
 	color: black;
 	border: 0;
 	border-radius: 10px;
+	resize: none;
 }
 
 .modal-reset {
@@ -543,14 +545,12 @@ input {
 }
 
 @media screen and (max-width: 280px) {
-
 	.sidebar {
 		display: none;
 	}
 
-	.sidepanel{
+	.sidepanel {
 		height: 100%;
 		width: 90%;
 	}
-
 }
