@@ -1,5 +1,5 @@
-@import 'bulma/css/bulma.min.css';
-
+@import "bulma/css/bulma.min.css";
+@import "bootstrap/dist/css/bootstrap.min.css";
 
 :root {
 	--pri-color: #abbad0;
@@ -230,7 +230,7 @@ input {
 	margin-left: 1rem;
 	width: 80%;
 	white-space: nowrap;
-	overflow: hidden; 
+	overflow: hidden;
 	text-overflow: clip;
 }
 
@@ -247,6 +247,25 @@ input {
 	overflow-x: hidden;
 }
 
+.dropdown-reset {
+	background-color: white;
+	color: black;
+	border: 0;
+}
+
+.dropdown-container {
+	height: 30vh;
+	width: 17rem;
+	overflow-x: hidden;
+}
+
+.dropdown-styles {
+}
+
+.dropdown-menu li:hover {
+	background-color: white;
+}
+
 #AI-container {
 	background-color: #dddddd5c;
 }
@@ -259,6 +278,7 @@ input {
 	width: 100%;
 	height: fit-content;
 	background-color: none;
+	color: black;
 }
 
 .msg {
@@ -311,15 +331,19 @@ input {
 	border-top: 0;
 }
 
-.modal-div-reset{
+.modal-div-reset {
 	background-color: white;
 	border-bottom: 0;
 	border-top: 0;
 	border-radius: 10px;
+	height: 50vh;
 }
 
-.modal-section-reset{
+.modal-section-reset {
+	overflow-y: hidden;
 	overflow-x: hidden;
+	display: flex;
+	justify-content: space-around;
 }
 
 .submit-button-container {
@@ -359,8 +383,11 @@ input {
 
 .sidepanel {
 	position: fixed;
+	position: absolute;
+	top: 0;
+	left: 0;
 	width: 90%;
-	height: 100vh;
+	height: 100%;
 	background-color: black;
 	color: white;
 	z-index: 2;
@@ -371,14 +398,11 @@ input {
 	display: none;
 }
 
-@media screen and (max-width: 1024px) {
+@media screen and (max-width: 1023px) {
 	.mobile-device-header {
-		position: fixed;
 		display: block;
 		display: flex;
 		align-items: center;
-		position: absolute;
-		top: 0;
 		width: 100%;
 		background-color: #343541;
 		border-bottom: solid rgba(255, 255, 255, 0.203) 0.2px;
@@ -386,8 +410,14 @@ input {
 		color: white;
 	}
 
+	.modal-div-reset {
+		height: 60%;
+		max-height: 20rem;
+	}
+
 	.sidepanel {
 		width: 30%;
+		min-width: 20rem;
 	}
 
 	.chat-page-header {
@@ -405,11 +435,8 @@ input {
 
 	.bottom-container {
 		width: 100%;
-		height: 20%;
-	}
-
-	.text-flex-positioner {
-		align-items: center;
+		height: 10%;
+		background-color: white;
 	}
 
 	.text-container {
@@ -427,7 +454,7 @@ input {
 		width: 70%;
 	}
 
-	.chat-title{
+	.chat-title {
 		width: 70%;
 	}
 }
@@ -448,12 +475,9 @@ input {
 	}
 
 	.mobile-device-header {
-		position: fixed;
 		display: block;
 		display: flex;
 		align-items: center;
-		position: absolute;
-		top: 0;
 		width: 100%;
 		background-color: #343541;
 		border-bottom: solid rgba(255, 255, 255, 0.203) 0.2px;
@@ -507,9 +531,26 @@ input {
 		height: 80%;
 	}
 
-	.chat-title{
+	.chat-title {
 		width: 80%;
+	}
+
+	.modal-div-reset {
+		height: 40%;
+		width: 95%;
+		min-height: 23rem;
 	}
 }
 
+@media screen and (max-width: 280px) {
 
+	.sidebar {
+		display: none;
+	}
+
+	.sidepanel{
+		height: 100%;
+		width: 90%;
+	}
+
+}
