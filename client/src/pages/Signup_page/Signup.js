@@ -2,13 +2,13 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+import { useGoogleLogin } from "@react-oauth/google";
 import {
 	faXTwitter,
 	faSquareFacebook,
 } from "@fortawesome/free-brands-svg-icons";
 
 const Signup = () => {
-	const [password, setPassword] = useState("");
 	const [showPassword, setShowPassword] = useState(false);
 
 	const togglePasswordVisibility = () => {
@@ -16,6 +16,13 @@ const Signup = () => {
 	};
 
 	const eyeIcon = showPassword ? faEyeSlash : faEye;
+
+	const login = useGoogleLogin({
+		onSuccess: (codeResponse) => console.log(codeResponse),
+		flow: "auth-code",
+	});
+
+	
 
 	return (
 		<div className="signup-page-div">
@@ -183,7 +190,7 @@ const Signup = () => {
 						></div>
 					</div>
 					<div className="socials-container">
-						<a href="" target="_blank" rel="noreferrer">
+						<a onClick={() => login()}>
 							<img
 								style={{ width: "3rem", height: "3rem" }}
 								src="google-logo.webp"

@@ -2,65 +2,36 @@ import React from "react";
 import "../../../index.css";
 
 
+const ConversationContainer = (props) => {
+	const { textareaValue, assistantResponse } = props;
 
-const ConversationContainer = () => {
 	return (
 		<div className="convo-container">
-			<UserMessage />
-			<AiMessage />
-			<UserMessage />
-			<AiMessage />
-			<UserMessage />
-			<AiMessage />
-			<UserMessage />
-			<AiMessage />
-			<UserMessage />
-			<AiMessage />
-			<UserMessage />
-			<AiMessage />
-			<UserMessage />
-			<AiMessage />
+			<Message
+				role="user"
+				content={textareaValue}
+				assistantResponse={assistantResponse}
+			/>
+			<Message
+				role="assistant"
+				content={assistantResponse}
+				textareaValue={textareaValue}
+			/>
 		</div>
 	);
 };
 
-const UserMessage = () => {
+const Message = ({ role, content, textareaValue, assistantResponse }) => {
+	const messageClass = role === "user" ? "user-message" : "assistant-message";
+
 	return (
-		<div className="message-container">
+		<div className={`message-container ${messageClass}`}>
 			<div className="profile-img-container"></div>
 			<div className="msg">
-				<p>
-					Amidst the bustling city, a lone street musician played a
-					melancholic tune on his weathered guitar, capturing the
-					hearts of passersby with each soulful note. The setting sun
-					painted the sky in hues of orange and pink, casting long
-					shadows that danced to the rhythm of the music. It was a
-					moment of serenity in the midst of chaos, a reminder of the
-					beauty that could be found in the simplest of moments.
-				</p>
+				{role === "user" ? <p>{content}</p> : <p>{content}</p>}
 			</div>
 		</div>
 	);
 };
-
-const AiMessage = () => {
-	return (
-		<div id="AI-container" className="message-container">
-			<div className="AiProfile"></div>
-			<div className="msg">
-				<p>
-					Amidst the bustling city, a lone street musician played a
-					melancholic tune on his weathered guitar, capturing the
-					hearts of passersby with each soulful note. The setting sun
-					painted the sky in hues of orange and pink, casting long
-					shadows that danced to the rhythm of the music. It was a
-					moment of serenity in the midst of chaos, a reminder of the
-					beauty that could be found in the simplest of moments.
-				</p>
-			</div>
-		</div>
-	);
-};
-
 
 export default ConversationContainer;

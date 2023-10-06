@@ -8,7 +8,7 @@ const messageSchema = new mongoose.Schema({
   },
   sender: {
     type: String,
-    enum: ['user', 'ai'], // Enumerate the possible senders
+    enum: ['user', 'ai'], 
     required: true,
   },
   timestamp: {
@@ -18,7 +18,7 @@ const messageSchema = new mongoose.Schema({
 });
 
 const conversationSchema = new mongoose.Schema({
-  messages: [messageSchema], // Combine user and AI messages into a single array
+  messages: [messageSchema], 
 });
 
 const Conversation = mongoose.model('Conversation', conversationSchema);

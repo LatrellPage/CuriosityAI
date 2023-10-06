@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const Chat = require('./Chat'); 
+const Lecture = require('./Lecture'); 
 const Settings = require('./Settings'); 
 
 
@@ -21,10 +21,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  chats: [
+  lectures: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: Chat, 
+      ref: Lecture, 
     },
   ],
   settings: {

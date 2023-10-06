@@ -3,9 +3,10 @@ import "../../index.css";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+import { useGoogleLogin } from "@react-oauth/google";
+
 
 const Login = () => {
-	const [password, setPassword] = useState("");
 	const [showPassword, setShowPassword] = useState(false);
 
 	const togglePasswordVisibility = () => {
@@ -14,11 +15,16 @@ const Login = () => {
 
 	const eyeIcon = showPassword ? faEyeSlash : faEye;
 
-  const [rememberMe, setRememberMe] = useState(false);
+	const [rememberMe, setRememberMe] = useState(false);
 
-  const handleCheckboxChange = () => {
-    setRememberMe(!rememberMe);
-  };
+	const handleCheckboxChange = () => {
+		setRememberMe(!rememberMe);
+	};
+
+	const login = useGoogleLogin({
+		onSuccess: (codeResponse) => console.log(codeResponse),
+		flow: "auth-code",
+	});
 
 	return (
 		<div className="page-positioner">
@@ -45,6 +51,7 @@ const Login = () => {
 							Dive deep into discussions and explore the
 							complexities of various subjects.
 						</p>
+
 						<div
 							style={{
 								height: "2.5rem",
@@ -61,6 +68,8 @@ const Login = () => {
 								alignItems: "center",
 								cursor: "pointer",
 							}}
+
+							onClick={() => login()}
 						>
 							<img
 								style={{ width: "1.5rem", height: "1.5rem" }}
@@ -186,15 +195,30 @@ const Login = () => {
 								/>
 							</div>
 						</div>
-						<div style={{display: "flex", width: "fit-content", marginTop: "0.3rem"}}>
+						<div
+							style={{
+								display: "flex",
+								width: "fit-content",
+								marginTop: "0.3rem",
+							}}
+						>
 							<input
 								type="checkbox"
 								id="remember-me"
 								checked={rememberMe}
 								onChange={handleCheckboxChange}
-                style={{display: "block", width: "1rem", height: "1rem"}}
+								style={{
+									display: "block",
+									width: "1rem",
+									height: "1rem",
+								}}
 							/>
-							<label style={{marginLeft: "0.5rem", color: "grey"}} htmlFor="remember-me">Remember Me?</label>
+							<label
+								style={{ marginLeft: "0.5rem", color: "grey" }}
+								htmlFor="remember-me"
+							>
+								Remember Me?
+							</label>
 						</div>
 						<button
 							style={{
