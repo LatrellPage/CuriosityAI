@@ -1,34 +1,30 @@
 import React from "react";
 import "../../../index.css";
 
-
-const ConversationContainer = (props) => {
-	const { textareaValue, assistantResponse } = props;
+const ConversationContainer = ({ messages }) => {
+	 const messagesToRender = messages.slice(1)
 
 	return (
 		<div className="convo-container">
-			<Message
-				role="user"
-				content={textareaValue}
-				assistantResponse={assistantResponse}
-			/>
-			<Message
-				role="assistant"
-				content={assistantResponse}
-				textareaValue={textareaValue}
-			/>
+			{messagesToRender.map((message, index) => (
+				<Message
+					key={index}
+					role={message.role}
+					content={message.content}
+				/>
+			))}
 		</div>
 	);
 };
 
-const Message = ({ role, content, textareaValue, assistantResponse }) => {
+const Message = ({ role, content }) => {
 	const messageClass = role === "user" ? "user-message" : "assistant-message";
 
 	return (
 		<div className={`message-container ${messageClass}`}>
 			<div className="profile-img-container"></div>
 			<div className="msg">
-				{role === "user" ? <p>{content}</p> : <p>{content}</p>}
+				<p>{content}</p>
 			</div>
 		</div>
 	);
