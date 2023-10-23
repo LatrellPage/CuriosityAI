@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
-const Conversation = require('./Conversation')
-const Settings = require('./Settings')
+
 
 const lectureSchema = new mongoose.Schema({
   title: {
@@ -9,14 +8,14 @@ const lectureSchema = new mongoose.Schema({
   },
   conversation: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: Conversation, 
-    required: true,
+    ref: 'Conversation', 
+    required: false,
   },
 
   lecturesettings: {
     type: String,
-    ref: Settings,
-    required: true,
+    ref: 'Settings',
+    default: null,
   }
 });
 

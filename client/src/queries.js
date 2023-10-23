@@ -42,6 +42,7 @@ const GET_LECTURES = gql`
     getAllLectures {
       _id
       title
+      conversation
       createdBy
       settings {
         professor
@@ -52,4 +53,17 @@ const GET_LECTURES = gql`
   }
 `;
 
-export { GET_LECTURES, CREATE_LECTURE, UPDATE_LECTURE_TITLE, DELETE_LECTURE };
+const UPDATE_LECTURE_SETTINGS = gql`
+  mutation UpdateLectureSettings($lectureId: ID!, $professor: String!, $language: String!) {
+    updateLectureSettings(lectureId: $lectureId, professor: $professor, language: $language) {
+      id
+      title
+      settings {
+        professor
+        language
+      }
+    }
+  }
+`;
+
+export { GET_LECTURES, CREATE_LECTURE, UPDATE_LECTURE_TITLE, DELETE_LECTURE, UPDATE_LECTURE_SETTINGS };

@@ -3,7 +3,8 @@ const secret = "mysecretsshhhhh";
 
 const authMiddleware = (req, res, next) => {
 	// Get the token from the request headers
-	const token = req.headers.authorization;
+	const token = req.headers.authorization || req.headers.Authorization;
+
 
 	// Check if the token is missing
 	if (!token) {

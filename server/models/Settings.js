@@ -1,17 +1,21 @@
 const mongoose = require('mongoose');
 
 
+const validLanguages = ['English', 'Spanish', 'French'];
+const validProfessors = ['Turing', 'Professor2', 'Professor3'];
+
 const settingsSchema = new mongoose.Schema({
   language: {
     type: String,
-    default: 'en', // Default language (e.g., English)
+    default: 'English',
+    enum: validLanguages, // Enforce language to be one of the valid languages
   },
-  voice: {
+  professor: {
     type: String,
-    default: 'default-voice', // Default voice
+    default: 'Turing',
+    enum: validProfessors, // Enforce professor to be one of the valid professors
   },
 });
-
 
 const Settings = mongoose.model('Settings', settingsSchema);
 

@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const moment = require('moment-timezone');
 
 const messageSchema = new mongoose.Schema({
   text: {
@@ -13,7 +12,6 @@ const messageSchema = new mongoose.Schema({
   },
   timestamp: {
     type: String,
-    default: () => moment().tz('America/New_York').format('YYYY-MM-DD HH:mm:ss z'),
   },
 });
 

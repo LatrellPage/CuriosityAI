@@ -9,25 +9,37 @@ import {
 	faGlobe,
 	faUser,
 } from "@fortawesome/free-solid-svg-icons";
-import { useQuery } from "@apollo/client";
-import { GET_LECTURES } from "../../../../queries";
+import { useQuery, useMutation } from "@apollo/client";
+import {
+	GET_LECTURES,
+	UPDATE_LECTURE_SETTINGS,
+	DELETE_LECTURE,
+} from "../../../../queries";
 
 const RecentChatsContainer = () => {
-	const { loading, error, data } = useQuery(GET_LECTURES);
+	// const { loading, error, data } = useQuery(GET_LECTURES);
 
-	const lectures = data.getAllLectures;
+	// if (loading) {
+	// 	console.log(loading);
+	// }
+	// if (error) {
+	// 	console.log(error);
+	// }
+
+	// const lectures = data.getAllLectures;
 
 	return (
 		<ol className="recent-chats-container">
-			{lectures.map((lecture) => (
+			<RecentChatItem/>
+			{/* {lectures.map((lecture) => (
 				<RecentChatItem key={lecture._id} lecture={lecture} />
-			))}
+			))} */}
 		</ol>
 	);
 };
 
 const RecentChatItem = (lecture) => {
-	console.log(lecture)
+	console.log(lecture);
 	const [showIcons, setShowIcons] = useState(false);
 	const [chatTitleStyles, setChatTitleStyles] = useState({
 		width: "80%",
@@ -56,6 +68,48 @@ const RecentChatItem = (lecture) => {
 		setInputValue(event.target.value);
 	};
 
+	const [deleteQuery] = useMutation(DELETE_LECTURE);
+
+	const lectureId = lecture.id;
+
+	const handleDeleteClick = () => {
+		deleteQuery({
+			variables: { lectureId },
+		})
+			.then((response) => {
+				// Handle the successful response here
+				console.log("Lecture deleted successfully", response);
+			})
+			.catch((error) => {
+				// Handle any errors that occur during the mutation
+				console.error("Error deleting lecture", error);
+			});
+	};
+
+	const [professor, setProfessor] = useState("current-professor");
+	const [language, setLanguage] = useState("current-language");
+
+	const handleLanguageChange = (newLanguage) => {
+		setLanguage(newLanguage);
+	};
+
+	const handleProfessorChange = (newProfessor) => {
+		setProfessor(newProfessor);
+	};
+
+	const handleSaveChanges = () => {
+		UPDATE_LECTURE_SETTINGS({
+			variables: {
+				lectureId: lectureId,
+				language: language,
+				professor: professor,
+			},
+		}).then((response) => {
+			console.log("Lecture settings updated successfully", response);
+			setIsModalOpen(false);
+		});
+	};
+
 	return (
 		<li
 			className="recent-chat"
@@ -69,7 +123,7 @@ const RecentChatItem = (lecture) => {
 				style={{ color: "whitesmoke", marginLeft: "1rem" }}
 			/>
 			<h1 className="chat-title" style={chatTitleStyles}>
-				New Chat about quantum mechanics
+				{lecture.title}
 			</h1>
 			{showIcons && (
 				<>
@@ -81,6 +135,7 @@ const RecentChatItem = (lecture) => {
 					<FontAwesomeIcon
 						icon={faTrashCan}
 						style={{ color: "#ffffff", marginRight: "0.7rem" }}
+						onClick={handleDeleteClick}
 					/>
 				</>
 			)}
@@ -112,11 +167,20 @@ const RecentChatItem = (lecture) => {
 							></button>
 						</header>
 						<section className="modal-card-body modal-section-reset">
-							<ProfessorSelectionDropDown />
-							<LanguageSelectionDropdown />
+							<ProfessorSelectionDropDown
+								professor={professor}
+								onProfessorChange={handleProfessorChange}
+							/>
+							<LanguageSelectionDropdown 
+								language={language}
+								onLanguageChange={handleLanguageChange}
+							/>
 						</section>
 						<footer className="modal-card-foot modal-reset">
-							<button className="button is-success">
+							<button
+								className="button is-success"
+								onClick={handleSaveChanges}
+							>
 								Save changes
 							</button>
 						</footer>

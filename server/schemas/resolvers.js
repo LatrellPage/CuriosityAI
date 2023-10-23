@@ -27,9 +27,8 @@ const resolvers = {
 			}
 		},
 
-		getAllLectures: async (_, __, context) => {
-			// Use the authMiddleware to check authentication
-			authMiddleware(context.req, context.res);
+		getAllLectures: async (_, __,) => {
+			
 
 			// This block will only execute if the user is authenticated
 			try {

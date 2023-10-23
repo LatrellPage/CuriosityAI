@@ -6,7 +6,6 @@ import MobileDeviceHeader from "./Components/MobileDeviceHeader";
 import MobileDeviceSidePanel from "./Components/MobileDeviceSidepanel";
 import Sidebar from "./Components/Sidebar";
 import OpenAI from "openai";
-import { useQuery } from '@apollo/client';
 
 
 
