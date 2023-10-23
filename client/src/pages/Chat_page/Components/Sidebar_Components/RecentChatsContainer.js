@@ -2,32 +2,32 @@ import React, { useState } from "react";
 import "../../../../index.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMessage, faTrashCan, faPen, faGlobe, faUser,} from "@fortawesome/free-solid-svg-icons";
-import { useQuery } from '@apollo/client';
-import { GET_ALL_LECTURES } from '';
-
+import {
+	faMessage,
+	faTrashCan,
+	faPen,
+	faGlobe,
+	faUser,
+} from "@fortawesome/free-solid-svg-icons";
+import { useQuery } from "@apollo/client";
+import { GET_LECTURES } from "../../../../queries";
 
 const RecentChatsContainer = () => {
+	const { loading, error, data } = useQuery(GET_LECTURES);
+
+	const lectures = data.getAllLectures;
+
 	return (
 		<ol className="recent-chats-container">
-			<RecentChatItem />
-			<RecentChatItem />
-			<RecentChatItem />
-			<RecentChatItem />
-			<RecentChatItem />
-			<RecentChatItem />
-			<RecentChatItem />
-			<RecentChatItem />
-			<RecentChatItem />
-			<RecentChatItem />
-			<RecentChatItem />
-			<RecentChatItem />
-			<RecentChatItem />
+			{lectures.map((lecture) => (
+				<RecentChatItem key={lecture._id} lecture={lecture} />
+			))}
 		</ol>
 	);
 };
 
-const RecentChatItem = () => {
+const RecentChatItem = (lecture) => {
+	console.log(lecture)
 	const [showIcons, setShowIcons] = useState(false);
 	const [chatTitleStyles, setChatTitleStyles] = useState({
 		width: "80%",
@@ -50,11 +50,10 @@ const RecentChatItem = () => {
 		setIsModalOpen(false);
 	};
 
-	const [inputValue, setInputValue] = useState("Title here"); 
+	const [inputValue, setInputValue] = useState("Title here");
 
-	
 	const handleInputChange = (event) => {
-		setInputValue(event.target.value); 
+		setInputValue(event.target.value);
 	};
 
 	return (
