@@ -3,6 +3,8 @@ import "../../../../index.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMessage, faTrashCan, faPen, faGlobe, faUser,} from "@fortawesome/free-solid-svg-icons";
+import { useQuery } from '@apollo/client';
+import { GET_ALL_LECTURES } from '';
 
 
 const RecentChatsContainer = () => {

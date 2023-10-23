@@ -2,7 +2,8 @@
 @import "bootstrap/dist/css/bootstrap.min.css";
 
 :root {
-	--pri-color: #abbad0;
+	--pri-color: #ddd;
+	--secondary-color: rgb(255, 255, 255);
 }
 
 html,
@@ -121,9 +122,10 @@ table {
 	width: 20%;
 	display: block;
 	height: 100vh;
-	background-color: #474859;
-	color: white;
+	background-color: var(--secondary-color);
+	color: black;
 	min-width: 300px;
+	box-shadow: 5px 0 10px rgba(128, 128, 128, 0.5);
 }
 
 .sidebar-header {
@@ -144,6 +146,7 @@ table {
 	height: 60%;
 	border: 0.2px solid whitesmoke;
 	cursor: pointer;
+	color: black;
 }
 
 .recent-chats-container {
@@ -270,7 +273,7 @@ input {
 	background-color: white;
 }
 
-#AI-container {
+.AI-container {
 	background-color: #dddddd5c;
 }
 
@@ -394,7 +397,7 @@ input {
 	left: 0;
 	width: 90%;
 	height: 100%;
-	background-color: #474859;
+	background-color: var(--secondary-color);
 	color: white;
 	z-index: 2;
 	display: none;
@@ -500,7 +503,7 @@ input {
 		display: flex;
 		align-items: center;
 		width: 100%;
-		background-color: #474859;
+		background-color: var(--secondary-color);
 		border-bottom: solid rgba(255, 255, 255, 0.203) 0.2px;
 		height: 7vh;
 		color: white;
@@ -616,7 +619,7 @@ input {
 		width: 90%;
 		max-width: 320px;
 		padding: 10px;
-		background-color: #474859;
+		background-color: var(--secondary-color);
 	}
 
 	.mobile-device-header {
@@ -624,8 +627,8 @@ input {
 		display: flex;
 		align-items: center;
 		width: 100%;
-		background-color: #474859;
-		border-bottom: solid #474859 0.2px;
+		background-color: var(--secondary-color);
+		border-bottom: solid var(--secondary-color) 0.2px;
 		height: 7vh;
 		color: white;
 	}
@@ -648,7 +651,7 @@ input {
 	}
 
 	.bottom-container {
-		background-color: #474859;
+		background-color: var(--secondary-color);
 		border-top: solid rgba(255, 255, 255, 0.244) 0.2px;
 		height: 10%;
 	}

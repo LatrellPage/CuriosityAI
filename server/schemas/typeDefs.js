@@ -1,38 +1,38 @@
-const { gql } = require('apollo-server-express');
-
+const { gql } = require("apollo-server-express");
 
 const typeDefs = gql`
 	type User {
-		id: ID!
+		_id: ID!
 		username: String!
 		email: String!
 		lectures: [Lecture]
 	}
 
+	type LectureSettings {
+		professor: String
+		language: String
+		# Add other settings fields as needed
+	}
+
 	type Lecture {
-		id: ID!
+		_id: ID!
 		title: String!
-		createdBy: User!
-		conversations: [Conversation]
+		createdBy: ID!
 		settings: LectureSettings
+		createdAt: String
 	}
 
 	type Conversation {
-		id: ID!
+		_id: ID!
 		text: String!
-		user: User!
-	}
-
-	type LectureSettings {
-		id: ID!
-		setting1: String
-		setting2: Int
-		# Add other settings fields as needed
+		user: User
+		createdAt: String
 	}
 
 	type Query {
 		getUser(id: ID!): User
 		getLecture(id: ID!): Lecture
+		getAllLectures: [Lecture]
 		# Add other query types as needed
 	}
 
@@ -48,7 +48,8 @@ const typeDefs = gql`
 		deleteLecture(id: ID!): String
 		updateLectureSettings(
 			lectureId: ID!
-			settings: LectureSettingsInput
+			professor: String
+			language: String
 		): Lecture
 	}
 
@@ -57,8 +58,8 @@ const typeDefs = gql`
 	}
 
 	input LectureSettingsInput {
-		setting1: String
-		setting2: Int
+		professor: String
+		language: String
 		# Add other settings fields as needed
 	}
 `;

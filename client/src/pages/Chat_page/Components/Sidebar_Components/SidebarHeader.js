@@ -11,7 +11,7 @@ const SidebarHeader = ({ closeSidePanel }) => {
 				icon={faX}
 				className="x-icon"
 				style={{
-					color: "#ffffff",
+					color: "#000000",
 					marginLeft: "4rem",
 					marginTop: "-2rem",
 					fontSize: "1rem",
@@ -29,7 +29,7 @@ const NewChatBTN = () => {
 		<div className="new-chatBTN">
 			<FontAwesomeIcon
 				icon={faPlus}
-				style={{ color: "#ffffff", marginRight: "1rem" }}
+				style={{ color: "#000000", marginRight: "1rem" }}
 			/>
 			<div>New Lecture</div>
 		</div>

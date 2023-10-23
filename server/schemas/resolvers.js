@@ -1,7 +1,5 @@
 const User = require("../models/User");
 const Lecture = require("../models/Lecture");
-const Conversation = require("../models/Conversation");
-const Settings = require("../models/Settings");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { AuthenticationError } = require("apollo-server-express");
@@ -20,13 +18,25 @@ const resolvers = {
 			}
 		},
 
-		// Fetch a lecture by ID
 		getLecture: async (_, { id }) => {
 			try {
 				const lecture = await Lecture.findById(id);
 				return lecture;
 			} catch (error) {
 				throw new Error("Error fetching lecture");
+			}
+		},
+
+		getAllLectures: async (_, __, context) => {
+			// Use the authMiddleware to check authentication
+			authMiddleware(context.req, context.res);
+
+			// This block will only execute if the user is authenticated
+			try {
+				const allLectures = await Lecture.find();
+				return allLectures;
+			} catch (error) {
+				throw new Error("Error fetching all lectures");
 			}
 		},
 	},
@@ -91,50 +101,81 @@ const resolvers = {
 
 		createLecture: async (_, { title, userId }, context) => {
 			// Use the authMiddleware to check authentication
-			authMiddleware(context.req, context.res, async () => {
-				// This block will only execute if the user is authenticated
+			authMiddleware(context.req, context.res);
+
+			// This block will only execute if the user is authenticated
+			try {
 				const lecture = new Lecture({
 					title,
 					createdBy: userId,
+					settings: {
+						professor: "",
+						language: "",
+					},
 				});
 				await lecture.save();
 				return lecture;
-			});
+			} catch (error) {
+				throw new Error(`Lecture creation failed: ${error.message}`);
+			}
 		},
 
 		updateLectureTitle: async (_, { id, newTitle }, context) => {
 			// Use the authMiddleware to check authentication
-			authMiddleware(context.req, context.res, async () => {
-				// This block will only execute if the user is authenticated
+			authMiddleware(context.req, context.res);
+
+			// This block will only execute if the user is authenticated
+			try {
 				const lecture = await Lecture.findByIdAndUpdate(
 					id,
 					{ title: newTitle },
 					{ new: true }
 				);
 				return lecture;
-			});
+			} catch (error) {
+				throw new Error(
+					`Lecture title update failed: ${error.message}`
+				);
+			}
 		},
 
 		deleteLecture: async (_, { id }, context) => {
 			// Use the authMiddleware to check authentication
-			authMiddleware(context.req, context.res, async () => {
-				// This block will only execute if the user is authenticated
+			authMiddleware(context.req, context.res);
+
+			// This block will only execute if the user is authenticated
+			try {
 				await Lecture.findByIdAndDelete(id);
 				return "Lecture deleted successfully";
-			});
+			} catch (error) {
+				throw new Error(`Lecture deletion failed: ${error.message}`);
+			}
 		},
 
-		updateLectureSettings: async (_, { lectureId, settings }, context) => {
+		updateLectureSettings: async (
+			_,
+			{ lectureId, professor, language },
+			context
+		) => {
 			// Use the authMiddleware to check authentication
-			authMiddleware(context.req, context.res, async () => {
-				// This block will only execute if the user is authenticated
+			authMiddleware(context.req, context.res);
+
+			// This block will only execute if the user is authenticated
+			try {
 				const updatedLecture = await Lecture.findByIdAndUpdate(
 					lectureId,
-					{ settings },
+					{
+						"settings.professor": professor,
+						"settings.language": language,
+					},
 					{ new: true }
 				);
 				return updatedLecture;
-			});
+			} catch (error) {
+				throw new Error(
+					`Lecture settings update failed: ${error.message}`
+				);
+			}
 		},
 	},
 };

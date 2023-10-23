@@ -18,11 +18,12 @@ const ConversationContainer = ({ messages }) => {
 };
 
 const Message = ({ role, content }) => {
-	const messageClass = role === "user" ? "user-message" : "assistant-message";
+	const messageClass = role === "user" ? "user-message" : "AI-container";
+	const profileContainer = role === "user" ? "profile-img-container" : "AiProfile";
 
 	return (
 		<div className={`message-container ${messageClass}`}>
-			<div className="profile-img-container"></div>
+			<div className={`${profileContainer}`}></div>
 			<div className="msg">
 				<p>{content}</p>
 			</div>
