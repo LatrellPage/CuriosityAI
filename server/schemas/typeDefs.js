@@ -1,41 +1,46 @@
 const { gql } = require("apollo-server-express");
 
 const typeDefs = gql`
+	# User type represents a user in the system
 	type User {
 		_id: ID!
-		username: String!
-		email: String!
+		name: String
+		email: String
+		password: String
 		lectures: [Lecture]
 	}
 
-	type LectureSettings {
-		professor: String
-		language: String
-		# Add other settings fields as needed
-	}
 
+	# Lecture type represents a lecture with associated settings, conversation, and messages
 	type Lecture {
 		_id: ID!
 		title: String!
-		createdBy: ID!
-		settings: LectureSettings
-		createdAt: String
+		language: String
+		professor: String
+		conversation: [Message]
+		userId: ID
 	}
 
-	type Conversation {
+	# Message type represents a message in a conversation, including text, sender, and timestamp
+	
+
+	type Message {
 		_id: ID!
 		text: String!
-		user: User
-		createdAt: String
+		sender: String
+		timestamp: String
 	}
 
+	# Query type for retrieving data
 	type Query {
 		getUser(id: ID!): User
+		getAllUsers: [User]
 		getLecture(id: ID!): Lecture
+		getUserLectures(userId: ID!): [Lecture]
 		getAllLectures: [Lecture]
-		# Add other query types as needed
 	}
 
+	# Mutation type for performing actions like registration, login, creating lectures, and updating settings
 	type Mutation {
 		registerUser(
 			username: String!
@@ -53,10 +58,12 @@ const typeDefs = gql`
 		): Lecture
 	}
 
+	# AuthPayload type represents the response from registration and login mutations, including a token
 	type AuthPayload {
 		token: String!
 	}
 
+	# Input type for updating lecture settings
 	input LectureSettingsInput {
 		professor: String
 		language: String

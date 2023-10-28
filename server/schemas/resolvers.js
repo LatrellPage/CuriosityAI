@@ -5,16 +5,23 @@ const jwt = require("jsonwebtoken");
 const { AuthenticationError } = require("apollo-server-express");
 const { authMiddleware } = require("../utils/auth");
 
-const SECRET_KEY = "your-secret-key";
-
 const resolvers = {
 	Query: {
 		getUser: async (_, { id }) => {
 			try {
-				const user = await User.findById(id);
+				const user = await User.findById(id).populate("lectures");
 				return user;
 			} catch (error) {
-				throw new Error("Error fetching user");
+				throw new Error("Error fetching user and user's lectures");
+			}
+		},
+
+		getAllUsers: async () => {
+			try {
+				const users = await User.find({});
+				return users;
+			} catch (error) {
+				throw new Error("Error fecthing users");
 			}
 		},
 
@@ -27,18 +34,35 @@ const resolvers = {
 			}
 		},
 
-		getAllLectures: async (_, __,) => {
-			
-
-			// This block will only execute if the user is authenticated
+		getUserLectures: async (_, { userId }) => {
 			try {
-				const allLectures = await Lecture.find();
-				return allLectures;
+				const user = await User.findById(userId).populate("lectures");
+				return user;
 			} catch (error) {
-				throw new Error("Error fetching all lectures");
+				throw new Error("Error fetching user lectures");
+			}
+		},
+
+		getAllLectures: async () => {
+			try {
+				const lectures = await Lecture.find({}).populate(
+					"conversation"
+				);
+				return lectures;
+			} catch (error) {
+				throw new Error("Error fecthing lectures");
 			}
 		},
 	},
+
+	Lecture: {
+		conversation: (lecture) => {
+			// console.log(lecture)
+			// The console.log above displays all the message in the terminal
+			return lecture.conversation.messages;
+		},
+	},
+
 	Mutation: {
 		registerUser: async (_, { username, email, password }) => {
 			try {
@@ -98,20 +122,21 @@ const resolvers = {
 			}
 		},
 
-		createLecture: async (_, { title, userId }, context) => {
-			// Use the authMiddleware to check authentication
-			authMiddleware(context.req, context.res);
+		createLecture: async (_, { input }, context) => {
+			// authMiddleware(context.req, context.res);
 
-			// This block will only execute if the user is authenticated
 			try {
+				const { message } = input;
+				const { user } = context.req;
+
 				const lecture = new Lecture({
-					title,
-					createdBy: userId,
-					settings: {
-						professor: "",
-						language: "",
-					},
+					title: "New lecture",
+					language: "Default Language", // Replace with the default language
+					professor: "Default Professor", // Replace with the default professor
+					conversation: [message],
+					user: user._id,
 				});
+
 				await lecture.save();
 				return lecture;
 			} catch (error) {
@@ -157,7 +182,7 @@ const resolvers = {
 			context
 		) => {
 			// Use the authMiddleware to check authentication
-			authMiddleware(context.req, context.res);
+			// authMiddleware(context.req, context.res);
 
 			// This block will only execute if the user is authenticated
 			try {

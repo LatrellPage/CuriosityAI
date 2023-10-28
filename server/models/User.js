@@ -1,6 +1,4 @@
 const mongoose = require('mongoose');
-const Lecture = require('./Lecture'); 
-const Settings = require('./Settings'); 
 
 
 const userSchema = new mongoose.Schema({
@@ -24,16 +22,12 @@ const userSchema = new mongoose.Schema({
   lectures: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: Lecture, 
+      ref: "Lecture", 
     },
   ],
-  settings: {
-    type: Settings.schema, // Reference the Settings schema
-    default: () => ({}), // You can set default settings here
-  },
+  
 });
 
-// Create the User model
-const User = mongoose.model('User', userSchema);
+const User = mongoose.model("User", userSchema);
 
 module.exports = User;

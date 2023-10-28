@@ -5,14 +5,18 @@ const { typeDefs, resolvers } = require("./schemas");
 const db = require("./config/connection");
 const { authMiddleware } = require("./utils/auth");
 const path = require("path");
-const seed = require("./Seed/seed")
+const seed = require("./Seed/seed");
 
 const PORT = process.env.PORT || 3001;
 const app = express();
 const server = new ApolloServer({
 	typeDefs,
 	resolvers,
-	context: authMiddleware,
+	context: ({ req, res }) => {
+		return {
+			user: req.user,
+		};
+	},
 });
 
 app.use(express.urlencoded({ extended: false }));
@@ -32,7 +36,9 @@ const startApolloServer = async () => {
 
 	app.listen(PORT, () => {
 		console.log(`API server running on port ${PORT}!`);
-		console.log(`Use GraphQL at http://localhost:${PORT}${server.graphqlPath}`);
+		console.log(
+			`Use GraphQL at http://localhost:${PORT}${server.graphqlPath}`
+		);
 	});
 };
 

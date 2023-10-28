@@ -1,5 +1,12 @@
 const jwt = require("jsonwebtoken");
-const secret = "mysecretsshhhhh";
+const crypto = require("crypto")
+
+const generateRandomSecretKey = () => {
+	return crypto.randomBytes(64).toString('hex');
+};
+
+const SECRET_KEY = generateRandomSecretKey()
+console.log(SECRET_KEY)
 
 const authMiddleware = (req, res, next) => {
 	// Get the token from the request headers
@@ -28,4 +35,4 @@ const authMiddleware = (req, res, next) => {
 	}
 };
 
-module.exports = authMiddleware;
+module.exports = { authMiddleware };
