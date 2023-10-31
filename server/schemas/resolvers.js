@@ -122,83 +122,33 @@ const resolvers = {
 			}
 		},
 
-		createLecture: async (_, { input }, context) => {
-			// authMiddleware(context.req, context.res);
-
+		createLecture: async (_, args) => {
 			try {
-				const { message } = input;
-				const { user } = context.req;
+				const {  userId } = args;
 
 				const lecture = new Lecture({
-					title: "New lecture",
-					language: "Default Language", // Replace with the default language
-					professor: "Default Professor", // Replace with the default professor
-					conversation: [message],
-					user: user._id,
+					title: "New Lecture",
+					language: "English",
+					professor: "Turing",
+					userId,
 				});
 
 				await lecture.save();
+				console.log("You have successfully created a lecture.")
 				return lecture;
 			} catch (error) {
 				throw new Error(`Lecture creation failed: ${error.message}`);
 			}
 		},
 
-		updateLectureTitle: async (_, { id, newTitle }, context) => {
-			// Use the authMiddleware to check authentication
-			authMiddleware(context.req, context.res);
+		deleteLecture: async (_, { id }) => {
+			// authMiddleware(context.req, context.res);
 
-			// This block will only execute if the user is authenticated
-			try {
-				const lecture = await Lecture.findByIdAndUpdate(
-					id,
-					{ title: newTitle },
-					{ new: true }
-				);
-				return lecture;
-			} catch (error) {
-				throw new Error(
-					`Lecture title update failed: ${error.message}`
-				);
-			}
-		},
-
-		deleteLecture: async (_, { id }, context) => {
-			// Use the authMiddleware to check authentication
-			authMiddleware(context.req, context.res);
-
-			// This block will only execute if the user is authenticated
 			try {
 				await Lecture.findByIdAndDelete(id);
 				return "Lecture deleted successfully";
 			} catch (error) {
 				throw new Error(`Lecture deletion failed: ${error.message}`);
-			}
-		},
-
-		updateLectureSettings: async (
-			_,
-			{ lectureId, professor, language },
-			context
-		) => {
-			// Use the authMiddleware to check authentication
-			// authMiddleware(context.req, context.res);
-
-			// This block will only execute if the user is authenticated
-			try {
-				const updatedLecture = await Lecture.findByIdAndUpdate(
-					lectureId,
-					{
-						"settings.professor": professor,
-						"settings.language": language,
-					},
-					{ new: true }
-				);
-				return updatedLecture;
-			} catch (error) {
-				throw new Error(
-					`Lecture settings update failed: ${error.message}`
-				);
 			}
 		},
 	},

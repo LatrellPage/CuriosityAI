@@ -21,9 +21,6 @@ const typeDefs = gql`
 		userId: ID
 	}
 
-	# Message type represents a message in a conversation, including text, sender, and timestamp
-	
-
 	type Message {
 		_id: ID!
 		text: String!
@@ -48,14 +45,14 @@ const typeDefs = gql`
 			password: String!
 		): AuthPayload
 		loginUser(email: String!, password: String!): AuthPayload
-		createLecture(title: String!, userId: ID!): Lecture
-		updateLectureTitle(id: ID!, newTitle: String!): Lecture
 		deleteLecture(id: ID!): String
-		updateLectureSettings(
-			lectureId: ID!
-			professor: String
-			language: String
-		): Lecture
+		createLecture(userId: ID!): Lecture
+	}
+
+	input MessageInput {
+		text: String!
+		sender: String
+		timestamp: String
 	}
 
 	# AuthPayload type represents the response from registration and login mutations, including a token
