@@ -6,7 +6,6 @@ const jwt = require("jsonwebtoken");
 const { ApolloError } = require("apollo-server-errors");
 const { authMiddleware } = require("../utils/auth");
 
-
 const resolvers = {
 	Query: {
 		getUser: async (_, { id }) => {
@@ -39,7 +38,11 @@ const resolvers = {
 		getUserLectures: async (_, { userId }) => {
 			try {
 				const user = await User.findById(userId).populate("lectures");
-				return user;
+				if (!user) {
+					throw new Error("User not found");
+				}
+
+				return user.lectures || [];
 			} catch (error) {
 				throw new Error("Error fetching user lectures");
 			}
@@ -55,6 +58,7 @@ const resolvers = {
 				throw new Error("Error fecthing lectures");
 			}
 		},
+
 	},
 
 	Lecture: {
@@ -127,7 +131,6 @@ const resolvers = {
 				return {
 					id: user.id,
 					...user._doc,
-					
 				};
 			} else {
 				// If user doesnt exist, return error
@@ -147,6 +150,15 @@ const resolvers = {
 				});
 
 				await lecture.save();
+
+				// Also save the lecture to the user's lectures list
+				const user = await User.findById(userId);
+				if (!user) {
+					throw new Error("User not found");
+				}
+				user.lectures.push(lecture);
+				await user.save();
+
 				console.log("You have successfully created a lecture.");
 				return lecture;
 			} catch (error) {
@@ -164,6 +176,54 @@ const resolvers = {
 				throw new Error(`Lecture deletion failed: ${error.message}`);
 			}
 		},
+
+		insertMessageToLecture: async (_, { lectureId, message }) => {
+			try {
+				const lecture = await Lecture.findById(lectureId);
+				if (!lecture) {
+					throw new Error("Lecture not found");
+				}
+		
+				const { text, sender } = message;
+		
+				lecture.conversation.messages.push({ text, sender });
+				await lecture.save();
+		
+				return lecture;  // Return updated lecture
+			} catch (error) {
+				throw new Error(`Failed to insert message: ${error.message}`);
+			}
+		},
+
+		updateLectureSettings: async (_, { lectureId, settings }) => {
+
+			try {
+				// Find the lecture by its ID
+				const lecture = await Lecture.findById(lectureId);
+				if (!lecture) {
+					throw new Error("Lecture not found");
+				}
+		
+				// Update the lecture's properties with provided settings
+				if (settings.professor) {
+					lecture.professor = settings.professor;
+				}
+				if (settings.language) {
+					lecture.language = settings.language;
+				}
+
+				if (settings.title) {
+					lecture.title = settings.title;
+				}
+		
+				// Save the updated lecture
+				await lecture.save();
+		
+				return lecture;  // Return updated lecture
+			} catch (error) {
+				throw new Error(`Failed to update lecture settings: ${error.message}`);
+			}
+		}
 	},
 };
 

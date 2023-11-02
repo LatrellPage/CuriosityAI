@@ -7,7 +7,6 @@ const typeDefs = gql`
 		email: String
 		password: String
 		token: String
-		lectures: [Lecture]
 	}
 
 
@@ -33,7 +32,7 @@ const typeDefs = gql`
 		getUser(id: ID!): User
 		getAllUsers: [User]
 		getLecture(id: ID!): Lecture
-		getUserLectures(userId: ID!): [Lecture]
+		getUserLectures(userId: ID!): [Lecture!]!
 		getAllLectures: [Lecture]
 	}
 
@@ -55,18 +54,18 @@ const typeDefs = gql`
 
 	# Input type for updating lecture settings
 	input LectureSettingsInput {
-		professor: String
+		title: String
 		language: String
-		# Add other settings fields as needed
+		professor: String
 	}
 
 	type Mutation {
-		registerUser(
-			registerInput: RegisterInput
-		): User
+		registerUser(registerInput: RegisterInput): User
 		loginUser(loginInput: LoginInput): User
 		deleteLecture(id: ID!): String
 		createLecture(userId: ID!): Lecture
+		insertMessageToLecture(lectureId: ID!, message: MessageInput!): Lecture
+		updateLectureSettings(lectureId: ID!, settings: LectureSettingsInput!): Lecture
 	}
 `;
 
