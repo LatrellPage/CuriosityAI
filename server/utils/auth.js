@@ -1,12 +1,5 @@
 const jwt = require("jsonwebtoken");
-const crypto = require("crypto")
-
-const generateRandomSecretKey = () => {
-	return crypto.randomBytes(64).toString('hex');
-};
-
-const SECRET_KEY = generateRandomSecretKey()
-console.log(SECRET_KEY)
+require('dotenv').config();
 
 const authMiddleware = (req, res, next) => {
 	// Get the token from the request headers
@@ -22,7 +15,7 @@ const authMiddleware = (req, res, next) => {
 
 	try {
 		// Verify the token with the secret key
-		const decoded = jwt.verify(token, secret);
+		const decoded = jwt.verify(token, process.env.SECRET_KEY);
 
 		// Attach the decoded user data to the request object
 		req.user = decoded;

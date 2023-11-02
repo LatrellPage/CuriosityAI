@@ -1,9 +1,11 @@
+require("dotenv").config();
 const User = require("../models/User");
 const Lecture = require("../models/Lecture");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const { AuthenticationError } = require("apollo-server-express");
+const { ApolloError } = require("apollo-server-errors");
 const { authMiddleware } = require("../utils/auth");
+
 
 const resolvers = {
 	Query: {
@@ -64,67 +66,78 @@ const resolvers = {
 	},
 
 	Mutation: {
-		registerUser: async (_, { username, email, password }) => {
-			try {
-				// Check if a user with the same email already exists
-				const existingUser = await User.findOne({ email });
-				if (existingUser) {
-					throw new Error("User with this email already exists");
-				}
-
-				// Hash the password before saving it to the database
-				const hashedPassword = await bcrypt.hash(password, 10);
-
-				// Create a new user and save it to the database
-				const newUser = new User({
-					username,
-					email,
-					password: hashedPassword,
-				});
-				await newUser.save();
-
-				// Generate a JWT token for the newly registered user
-				const token = jwt.sign({ userId: newUser._id }, SECRET_KEY, {
-					expiresIn: "1h", // Token expiration time
-				});
-
-				return { token };
-			} catch (error) {
-				throw new Error(`Registration failed: ${error.message}`);
+		registerUser: async (_, { registerInput: { email, password } }) => {
+			// Check if user already exist by email
+			const existingUser = await User.findOne({ email });
+			if (existingUser) {
+				// If user exist throw error
+				throw new ApolloError(
+					`User with the ${email} already exists`,
+					"USER_ALREADY_EXISTS"
+				);
 			}
+
+			// encrypt the password before storing into db
+			const encryptedPassword = await bcrypt.hash(password, 10);
+
+			// create new user with email and encrypted password
+			const newUser = new User({
+				email: email.toLowerCase(),
+				password: encryptedPassword,
+			});
+
+			// create a token
+			const token = jwt.sign(
+				{ userId: newUser._id, email },
+				process.env.SECRET_KEY,
+				{
+					expiresIn: "1h",
+				}
+			);
+
+			// Attach that token to user
+			newUser.token = token;
+
+			// store user into db
+			const res = await newUser.save();
+
+			return {
+				id: res.id,
+				...res._doc,
+			};
 		},
 
-		loginUser: async (_, { email, password }) => {
-			try {
-				const user = await User.findOne({ email });
+		loginUser: async (_, { loginInput: { email, password } }) => {
+			// Find user by email
+			const user = await User.findOne({ email });
 
-				if (!user) {
-					throw new Error("User not found");
-				}
-
-				const isPasswordValid = await bcrypt.compare(
-					password,
-					user.password
+			// if user exist compare input password to encrypted password
+			if (user && (await bcrypt.compare(password, user.password))) {
+				const token = jwt.sign(
+					{ userId: user._id, email },
+					process.env.SECRET_KEY,
+					{
+						expiresIn: "1h",
+					}
 				);
 
-				if (!isPasswordValid) {
-					throw new Error("Invalid password");
-				}
+				// Attach token to user model that we found above
+				user.token = token;
 
-				// Generate a JWT token for the authenticated user
-				const token = jwt.sign({ userId: user._id }, SECRET_KEY, {
-					expiresIn: "1h", // Token expiration time
-				});
-
-				return { token };
-			} catch (error) {
-				throw new AuthenticationError(`Login failed: ${error.message}`);
+				return {
+					id: user.id,
+					...user._doc,
+					
+				};
+			} else {
+				// If user doesnt exist, return error
+				throw new ApolloError("incorrect password, INCORRECT_PASSWORD");
 			}
 		},
 
 		createLecture: async (_, args) => {
 			try {
-				const {  userId } = args;
+				const { userId } = args;
 
 				const lecture = new Lecture({
 					title: "New Lecture",
@@ -134,7 +147,7 @@ const resolvers = {
 				});
 
 				await lecture.save();
-				console.log("You have successfully created a lecture.")
+				console.log("You have successfully created a lecture.");
 				return lecture;
 			} catch (error) {
 				throw new Error(`Lecture creation failed: ${error.message}`);
