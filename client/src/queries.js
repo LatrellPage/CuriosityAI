@@ -1,69 +1,115 @@
 import { gql } from "@apollo/client";
 
-// Mutation to create a new lecture
-const CREATE_LECTURE = gql`
-  mutation createLecture($title: String!, $userId: ID!) {
-    createLecture(title: $title, userId: $userId) {
+// Mutation to register a new user
+export const REGISTER_USER = gql`
+  mutation registerUser($registerInput: RegisterInput) {
+    registerUser(registerInput: $registerInput) {
       _id
-      title
-      createdBy
-      settings {
-        professor
-        language
-      }
-      createdAt
+      name
+      email
+      password
+      token
     }
   }
 `;
 
-const UPDATE_LECTURE_TITLE = gql`
-  mutation updateLectureTitle($id: ID!, $newTitle: String!) {
-    updateLectureTitle(id: $id, newTitle: $newTitle) {
+// Mutation to login a user
+export const LOGIN_USER = gql`
+  mutation loginUser($loginInput: LoginInput) {
+    loginUser(loginInput: $loginInput) {
+      _id
+      email
+      token
+    }
+  }
+`;
+
+// Mutation to create a new lecture
+export const CREATE_LECTURE = gql`
+  mutation createLecture($userId: ID!) {
+    createLecture(userId: $userId) {
       _id
       title
-      settings {
-        professor
-        language
+      language
+      professor
+      userId
+    }
+  }
+`;
+
+// Mutation to insert a message into a lecture
+export const INSERT_MESSAGE_TO_LECTURE = gql`
+  mutation insertMessageToLecture($lectureId: ID!, $message: MessageInput!) {
+    insertMessageToLecture(lectureId: $lectureId, message: $message) {
+      _id
+      title
+      conversation {
+        _id
+        text
+        sender
+        timestamp
       }
-      createdAt
+    }
+  }
+`;
+
+// Mutation to update lecture settings
+export const UPDATE_LECTURE_SETTINGS = gql`
+  mutation updateLectureSettings($lectureId: ID!, $settings: LectureSettingsInput!) {
+    updateLectureSettings(lectureId: $lectureId, settings: $settings) {
+      _id
+      title
+      language
+      professor
     }
   }
 `;
 
 // Mutation to delete a lecture
-const DELETE_LECTURE = gql`
+export const DELETE_LECTURE = gql`
   mutation deleteLecture($id: ID!) {
     deleteLecture(id: $id)
   }
 `;
 
-const GET_LECTURES = gql`
-  query getLectures {
-    getAllLectures {
+
+// Query to get lectures for a specific user
+export const GET_USER_LECTURES = gql`
+  query getUserLectures($userId: ID!) {
+    getUserLectures(userId: $userId) {
       _id
       title
-      conversation
-      createdBy
-      settings {
-        professor
-        language
-      }
-      createdAt
+      language
+      professor
     }
   }
 `;
 
-const UPDATE_LECTURE_SETTINGS = gql`
-  mutation UpdateLectureSettings($lectureId: ID!, $professor: String!, $language: String!) {
-    updateLectureSettings(lectureId: $lectureId, professor: $professor, language: $language) {
-      id
+// Query to get a single lecture
+export const GET_LECTURE = gql`
+  query getLecture($id: ID!) {
+    getLecture(id: $id) {
+      _id
       title
-      settings {
-        professor
-        language
+      language
+      professor
+      conversation {
+        _id
+        text
+        sender
+        timestamp
       }
     }
   }
 `;
 
-export { GET_LECTURES, CREATE_LECTURE, UPDATE_LECTURE_TITLE, DELETE_LECTURE, UPDATE_LECTURE_SETTINGS };
+// Query to get a single user
+export const GET_USER = gql`
+  query getUser($id: ID!) {
+    getUser(id: $id) {
+      _id
+      name
+    }
+  }
+`;
+

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import "../../../../index.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -11,35 +11,34 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { useQuery, useMutation } from "@apollo/client";
 import {
-	GET_LECTURES,
+	GET_USER_LECTURES,
 	UPDATE_LECTURE_SETTINGS,
 	DELETE_LECTURE,
 } from "../../../../queries";
+import { AuthContext } from "../../../../context/authContext";
 
 const RecentChatsContainer = () => {
-	// const { loading, error, data } = useQuery(GET_LECTURES);
+	const { user } = useContext(AuthContext);
+	const userId = user?.userId;
 
-	// if (loading) {
-	// 	console.log(loading);
-	// }
-	// if (error) {
-	// 	console.log(error);
-	// }
+	const { data } = useQuery(GET_USER_LECTURES, {
+		variables: { userId },
+	});
 
-	// const lectures = data.getAllLectures;
+	console.log(data);
 
-	return (
-		<ol className="recent-chats-container">
-			<RecentChatItem/>
-			{/* {lectures.map((lecture) => (
-				<RecentChatItem key={lecture._id} lecture={lecture} />
-			))} */}
-		</ol>
-	);
+	if (data && data.getUserLectures) {
+		return (
+			<ol className="recent-chats-container">
+				{data.getUserLectures.map((lecture) => (
+					<RecentChatItem key={lecture._id} title={lecture.title} />
+				))}
+			</ol>
+		);
+	}
 };
 
-const RecentChatItem = (lecture) => {
-	console.log(lecture);
+const RecentChatItem = ({ _id, title }) => {
 	const [showIcons, setShowIcons] = useState(false);
 	const [chatTitleStyles, setChatTitleStyles] = useState({
 		width: "80%",
@@ -62,7 +61,7 @@ const RecentChatItem = (lecture) => {
 		setIsModalOpen(false);
 	};
 
-	const [inputValue, setInputValue] = useState("Title here");
+	const [inputValue, setInputValue] = useState(`${title}`);
 
 	const handleInputChange = (event) => {
 		setInputValue(event.target.value);
@@ -70,18 +69,16 @@ const RecentChatItem = (lecture) => {
 
 	const [deleteQuery] = useMutation(DELETE_LECTURE);
 
-	const lectureId = lecture.id;
+	const handleDeleteClick = (event) => {
+		event.stopPropagation(); 
 
-	const handleDeleteClick = () => {
 		deleteQuery({
-			variables: { lectureId },
+			variables: { _id },
 		})
 			.then((response) => {
-				// Handle the successful response here
 				console.log("Lecture deleted successfully", response);
 			})
 			.catch((error) => {
-				// Handle any errors that occur during the mutation
 				console.error("Error deleting lecture", error);
 			});
 	};
@@ -100,7 +97,7 @@ const RecentChatItem = (lecture) => {
 	const handleSaveChanges = () => {
 		UPDATE_LECTURE_SETTINGS({
 			variables: {
-				lectureId: lectureId,
+				lectureId: _id,
 				language: language,
 				professor: professor,
 			},
@@ -120,21 +117,21 @@ const RecentChatItem = (lecture) => {
 		>
 			<FontAwesomeIcon
 				icon={faMessage}
-				style={{ color: "whitesmoke", marginLeft: "1rem" }}
+				style={{ color: "black", marginLeft: "1rem" }}
 			/>
 			<h1 className="chat-title" style={chatTitleStyles}>
-				{lecture.title}
+				{title}
 			</h1>
 			{showIcons && (
 				<>
 					<FontAwesomeIcon
 						icon={faPen}
-						style={{ color: "#ffffff", cursor: "pointer" }}
+						style={{ color: "black", cursor: "pointer" }}
 						onClick={openModal}
 					/>
 					<FontAwesomeIcon
 						icon={faTrashCan}
-						style={{ color: "#ffffff", marginRight: "0.7rem" }}
+						style={{ color: "black", marginRight: "0.7rem" }}
 						onClick={handleDeleteClick}
 					/>
 				</>
@@ -149,7 +146,7 @@ const RecentChatItem = (lecture) => {
 								class="input"
 								type="text"
 								value={inputValue}
-								placeholder="Enter a Title"
+								placeholder="Enter your title here"
 								style={{ width: "60%" }}
 								onChange={handleInputChange}
 							/>
@@ -171,7 +168,7 @@ const RecentChatItem = (lecture) => {
 								professor={professor}
 								onProfessorChange={handleProfessorChange}
 							/>
-							<LanguageSelectionDropdown 
+							<LanguageSelectionDropdown
 								language={language}
 								onLanguageChange={handleLanguageChange}
 							/>

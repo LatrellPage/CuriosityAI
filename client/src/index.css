@@ -2,8 +2,8 @@
 @import "bootstrap/dist/css/bootstrap.min.css";
 
 :root {
-	--pri-color: #ddd;
-	--secondary-color: rgb(255, 255, 255);
+	--pri-color: #caf2d9;
+	--secondary-color: white;
 }
 
 html,

@@ -4,6 +4,7 @@ const typeDefs = gql`
 	# User type represents a user in the system
 	type User {
 		_id: ID!
+		name: String
 		email: String
 		password: String
 		token: String
@@ -43,6 +44,7 @@ const typeDefs = gql`
 	}
 
 	input RegisterInput{
+		name: String
 		email: String
 		password: String
 	}

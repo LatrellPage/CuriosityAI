@@ -6,6 +6,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: 'default-profile-pic.jpg', // You can set a default profile picture
   },
+  name: {
+    type: String,
+    required: true,
+  },
   email: {
     type: String,
     unique: true, 

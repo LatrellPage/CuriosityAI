@@ -10,10 +10,10 @@ const resolvers = {
 	Query: {
 		getUser: async (_, { id }) => {
 			try {
-				const user = await User.findById(id).populate("lectures");
+				const user = await User.findById(id);
 				return user;
 			} catch (error) {
-				throw new Error("Error fetching user and user's lectures");
+				throw new Error("Error fetching user");
 			}
 		},
 
@@ -22,7 +22,7 @@ const resolvers = {
 				const users = await User.find({});
 				return users;
 			} catch (error) {
-				throw new Error("Error fecthing users");
+				throw new Error("Error fetching users");
 			}
 		},
 
@@ -58,7 +58,6 @@ const resolvers = {
 				throw new Error("Error fecthing lectures");
 			}
 		},
-
 	},
 
 	Lecture: {
@@ -70,7 +69,10 @@ const resolvers = {
 	},
 
 	Mutation: {
-		registerUser: async (_, { registerInput: { email, password } }) => {
+		registerUser: async (
+			_,
+			{ registerInput: { name, email, password } }
+		) => {
 			// Check if user already exist by email
 			const existingUser = await User.findOne({ email });
 			if (existingUser) {
@@ -84,15 +86,35 @@ const resolvers = {
 			// encrypt the password before storing into db
 			const encryptedPassword = await bcrypt.hash(password, 10);
 
+			const capitalizeFullName = (name) => {
+				if (typeof name !== "string" || !name.trim()) {
+					throw new Error("Invalid name input");
+				}
+				return name
+					.replace(/\s+/g, " ") 
+					.trim() 
+					.split(" ")
+					.map(
+						(part) =>
+							part.charAt(0).toUpperCase() +
+							part.substring(1).toLowerCase()
+					)
+					.join(" ");
+			};
+
+
 			// create new user with email and encrypted password
 			const newUser = new User({
+				name: capitalizeFullName(name),
 				email: email.toLowerCase(),
 				password: encryptedPassword,
 			});
 
+			console.log(capitalizeFullName(name));
+
 			// create a token
 			const token = jwt.sign(
-				{ userId: newUser._id, email },
+				{ userId: newUser._id, name, email },
 				process.env.SECRET_KEY,
 				{
 					expiresIn: "1h",
@@ -183,27 +205,25 @@ const resolvers = {
 				if (!lecture) {
 					throw new Error("Lecture not found");
 				}
-		
+
 				const { text, sender } = message;
-		
+
 				lecture.conversation.messages.push({ text, sender });
 				await lecture.save();
-		
-				return lecture;  // Return updated lecture
+
+				return lecture;
 			} catch (error) {
 				throw new Error(`Failed to insert message: ${error.message}`);
 			}
 		},
 
 		updateLectureSettings: async (_, { lectureId, settings }) => {
-
 			try {
-				// Find the lecture by its ID
 				const lecture = await Lecture.findById(lectureId);
 				if (!lecture) {
 					throw new Error("Lecture not found");
 				}
-		
+
 				// Update the lecture's properties with provided settings
 				if (settings.professor) {
 					lecture.professor = settings.professor;
@@ -215,15 +235,17 @@ const resolvers = {
 				if (settings.title) {
 					lecture.title = settings.title;
 				}
-		
+
 				// Save the updated lecture
 				await lecture.save();
-		
-				return lecture;  // Return updated lecture
+
+				return lecture; // Return updated lecture
 			} catch (error) {
-				throw new Error(`Failed to update lecture settings: ${error.message}`);
+				throw new Error(
+					`Failed to update lecture settings: ${error.message}`
+				);
 			}
-		}
+		},
 	},
 };
 

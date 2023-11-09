@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
@@ -7,8 +7,51 @@ import {
 	faXTwitter,
 	faSquareFacebook,
 } from "@fortawesome/free-brands-svg-icons";
+import { useMutation } from "@apollo/react-hooks";
+import { gql } from "graphql-tag";
+import { useNavigate } from "react-router-dom";
+import { REGISTER_USER } from "../../queries";
+import { AuthContext } from "../../context/authContext";
 
 const Signup = () => {
+	const context = useContext(AuthContext);
+	let navigate = useNavigate();
+	const [errors, setErrors] = useState([]);
+
+	const [registerUser, { loading }] = useMutation(REGISTER_USER, {
+		update(proxy, { data: { registerUser: userData } }) {
+			context.login(userData);
+			navigate("/");
+			console.log("sign up was successful");
+		},
+		onError(err) {
+			console.log("there was an error registering the user");
+			setErrors(err.graphQLErrors);
+		},
+	});
+
+	const [values, setValues] = useState({ name: "", email: "", password: "" }); // Holds the form values
+
+	// This function updates the `values` state whenever an input changes.
+	const handleChange = (event) => {
+		setValues({ ...values, [event.target.name]: event.target.value });
+	};
+
+	// This function is called when the form is submitted.
+	const handleSubmit = (event) => {
+		console.log("form submitted", values);
+		event.preventDefault();
+		registerUser({
+			variables: {
+				registerInput: {
+					name: values.name,
+					email: values.email,
+					password: values.password,
+				},
+			},
+		});
+	};
+
 	const [showPassword, setShowPassword] = useState(false);
 
 	const togglePasswordVisibility = () => {
@@ -22,13 +65,19 @@ const Signup = () => {
 		flow: "auth-code",
 	});
 
-	
-
 	return (
 		<div className="signup-page-div">
 			<div className="signup-form">
-				<form>
-					<h1 style={{ fontWeight: "400", fontSize: "1.5rem", marginLeft: "auto", marginRight: "auto",width: "fit-content" }}>
+				<form onSubmit={handleSubmit}>
+					<h1
+						style={{
+							fontWeight: "400",
+							fontSize: "1.5rem",
+							marginLeft: "auto",
+							marginRight: "auto",
+							width: "fit-content",
+						}}
+					>
 						<strong
 							style={{
 								fontWeight: "700",
@@ -38,9 +87,47 @@ const Signup = () => {
 							Signup Your Account
 						</strong>
 					</h1>
-					<p style={{ marginTop: "0.5rem", color: "#333333", marginLeft: "auto", marginRight: "auto", width: "fit-content" }}>
+					<p
+						style={{
+							marginTop: "0.5rem",
+							color: "#333333",
+							marginLeft: "auto",
+							marginRight: "auto",
+							width: "fit-content",
+						}}
+					>
 						Let's delve into the world of curiosity.
 					</p>
+
+					<p
+						style={{
+							marginTop: "2rem",
+							marginBottom: "0.3rem",
+							fontWeight: "500",
+						}}
+					>
+						Name
+					</p>
+
+					<input
+						style={{
+							height: "2.5rem",
+							width: "100%",
+							marginTop: "1rem",
+							marginLeft: "auto",
+							marginRight: "auto",
+							display: "block",
+							borderColor: "#ddd",
+							border: " solid 1px #333",
+							borderRadius: "5px",
+							textIndent: "1rem",
+						}}
+						placeholder="Enter your name"
+						name="name"
+						type="name"
+						required
+						onChange={handleChange}
+					/>
 
 					<p
 						style={{
@@ -68,6 +155,7 @@ const Signup = () => {
 						name="email"
 						type="email"
 						required
+						onChange={handleChange}
 					/>
 
 					<p
@@ -107,6 +195,7 @@ const Signup = () => {
 							name="password"
 							type={showPassword ? "text" : "password"}
 							required
+							onChange={handleChange}
 						/>
 						<div
 							style={{ flex: "1", cursor: "pointer" }}
@@ -143,6 +232,7 @@ const Signup = () => {
 							backgroundColor: "#474859",
 							color: "white",
 						}}
+						type="submit"
 					>
 						Signup
 					</button>

@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@apollo/client": "^3.8.4",
+    "@apollo/react-hooks": "^4.0.0",
     "@fortawesome/fontawesome-svg-core": "^6.4.2",
     "@fortawesome/free-brands-svg-icons": "^6.4.2",
     "@fortawesome/free-solid-svg-icons": "^6.4.2",
@@ -17,6 +18,7 @@
     "cra-template": "1.2.0",
     "font-awesome": "^4.7.0",
     "fs": "^0.0.1-security",
+    "graphql-tag": "^2.12.6",
     "jwt-decode": "^3.1.2",
     "openai": "^4.0.0",
     "react": "^18.2.0",
