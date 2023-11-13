@@ -18,6 +18,7 @@ export const LOGIN_USER = gql`
   mutation loginUser($loginInput: LoginInput) {
     loginUser(loginInput: $loginInput) {
       _id
+      name
       email
       token
     }

@@ -14,7 +14,7 @@ const Chat = () => {
 	const { user } = useContext(AuthContext);
 	const name = user?.name;
 
-	const nameParts = name.split(' ')
+	const nameParts = name.split(' ');
 
 	const firstName = nameParts[0]
 

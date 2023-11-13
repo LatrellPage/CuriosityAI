@@ -36,6 +36,7 @@ const resolvers = {
 		},
 
 		getUserLectures: async (_, { userId }) => {
+			console.log("queried lectures")
 			try {
 				const user = await User.findById(userId).populate("lectures");
 				if (!user) {

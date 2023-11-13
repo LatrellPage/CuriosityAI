@@ -8,7 +8,6 @@ import {
 	faSquareFacebook,
 } from "@fortawesome/free-brands-svg-icons";
 import { useMutation } from "@apollo/react-hooks";
-import { gql } from "graphql-tag";
 import { useNavigate } from "react-router-dom";
 import { REGISTER_USER } from "../../queries";
 import { AuthContext } from "../../context/authContext";

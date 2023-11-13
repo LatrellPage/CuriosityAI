@@ -31,14 +31,14 @@ const RecentChatsContainer = () => {
 		return (
 			<ol className="recent-chats-container">
 				{data.getUserLectures.map((lecture) => (
-					<RecentChatItem key={lecture._id} title={lecture.title} />
+					<RecentChatItem key={lecture._id} _id={lecture._id} title={lecture.title} userId={userId}/>
 				))}
 			</ol>
 		);
 	}
 };
 
-const RecentChatItem = ({ _id, title }) => {
+const RecentChatItem = ({ _id, title, userId }) => {
 	const [showIcons, setShowIcons] = useState(false);
 	const [chatTitleStyles, setChatTitleStyles] = useState({
 		width: "80%",
@@ -67,13 +67,15 @@ const RecentChatItem = ({ _id, title }) => {
 		setInputValue(event.target.value);
 	};
 
-	const [deleteQuery] = useMutation(DELETE_LECTURE);
+	const [deleteQuery] = useMutation(DELETE_LECTURE, {
+		refetchQueries: [{ query: GET_USER_LECTURES, variables: { userId: userId } }],
+	});;
 
 	const handleDeleteClick = (event) => {
 		event.stopPropagation(); 
 
 		deleteQuery({
-			variables: { _id },
+			variables: { id: _id },
 		})
 			.then((response) => {
 				console.log("Lecture deleted successfully", response);
@@ -94,18 +96,28 @@ const RecentChatItem = ({ _id, title }) => {
 		setProfessor(newProfessor);
 	};
 
+	const [updateLectureSettings] = useMutation(UPDATE_LECTURE_SETTINGS);
+
 	const handleSaveChanges = () => {
-		UPDATE_LECTURE_SETTINGS({
+		updateLectureSettings({
 			variables: {
 				lectureId: _id,
-				language: language,
-				professor: professor,
+				settings: {
+					title: inputValue,
+					professor: professor,
+					language: language,
+				},
 			},
-		}).then((response) => {
+		})
+		.then((response) => {
 			console.log("Lecture settings updated successfully", response);
 			setIsModalOpen(false);
+		})
+		.catch((error) => {
+			console.error("Error updating lecture settings", error);
 		});
 	};
+	
 
 	return (
 		<li
@@ -189,12 +201,12 @@ const RecentChatItem = ({ _id, title }) => {
 	);
 };
 
-const ProfessorSelectionDropDown = () => {
+const ProfessorSelectionDropDown = ({ professor, onProfessorChange }) => {
 	return (
 		<div className="dropdown-container">
-			<div class="dropdown dropdown-reset position-dropdown">
+			<div className="dropdown dropdown-reset position-dropdown">
 				<button
-					class="btn dropdown-toggle dropdown-reset"
+					className="btn dropdown-toggle dropdown-reset"
 					type="button"
 					data-bs-toggle="dropdown"
 					aria-expanded="true"
@@ -206,20 +218,20 @@ const ProfessorSelectionDropDown = () => {
 					Professor
 				</button>
 
-				<ul class="dropdown-menu dropdown-styles">
+				<ul className="dropdown-menu dropdown-styles">
 					<li>
-						<button class="dropdown-item " type="button">
-							Mr. Doe
+						<button className="dropdown-item " type="button" onClick={() => onProfessorChange("Turing")}>
+							Turing
 						</button>
 					</li>
 					<li>
-						<button class="dropdown-item" type="button">
-							Mrs. Sandy
+						<button className="dropdown-item" type="button" onClick={() => onProfessorChange("Professor2")}>
+							Professor2
 						</button>
 					</li>
 					<li>
-						<button class="dropdown-item" type="button">
-							Mr. Carl
+						<button className="dropdown-item" type="button" onClick={() => onProfessorChange("Professor3")}>
+							Professor3
 						</button>
 					</li>
 				</ul>
@@ -228,13 +240,7 @@ const ProfessorSelectionDropDown = () => {
 	);
 };
 
-const LanguageSelectionDropdown = () => {
-	const [selectedLanguage, setSelectedLanguage] = useState("English");
-
-	const handleLanguageChange = (newLanguage) => {
-		setSelectedLanguage(newLanguage);
-	};
-
+const LanguageSelectionDropdown = ({ language, onLanguageChange }) => {
 	return (
 		<div className="dropdown-container">
 			<div className="dropdown dropdown-reset position-dropdown">
@@ -248,7 +254,7 @@ const LanguageSelectionDropdown = () => {
 						icon={faGlobe}
 						style={{ color: "#000000", marginRight: "0.5rem" }}
 					/>
-					{selectedLanguage}
+					{language}
 				</button>
 
 				<ul className="dropdown-menu position-dropdown dropdown-styles">
@@ -256,7 +262,7 @@ const LanguageSelectionDropdown = () => {
 						<button
 							className="dropdown-item"
 							type="button"
-							onClick={() => handleLanguageChange("English")}
+							onClick={() => onLanguageChange("English")}
 						>
 							English
 						</button>
@@ -265,7 +271,7 @@ const LanguageSelectionDropdown = () => {
 						<button
 							className="dropdown-item"
 							type="button"
-							onClick={() => handleLanguageChange("Spanish")}
+							onClick={() => onLanguageChange("Spanish")}
 						>
 							Spanish
 						</button>
@@ -274,7 +280,7 @@ const LanguageSelectionDropdown = () => {
 						<button
 							className="dropdown-item"
 							type="button"
-							onClick={() => handleLanguageChange("French")}
+							onClick={() => onLanguageChange("French")}
 						>
 							French
 						</button>
