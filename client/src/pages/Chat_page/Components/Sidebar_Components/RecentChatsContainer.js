@@ -172,6 +172,7 @@ const RecentChatItem = ({ _id, title, userId, isSelected, onSelect}) => {
 				console.error("Error updating lecture settings", error);
 			});
 	};
+	
 
 	return (
 		<li className="recent-chat" onClick={handleClick} style={itemStyle}>
