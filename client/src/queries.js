@@ -18,6 +18,7 @@ export const LOGIN_USER = gql`
   mutation loginUser($loginInput: LoginInput) {
     loginUser(loginInput: $loginInput) {
       _id
+      name
       email
       token
     }
@@ -42,7 +43,6 @@ export const INSERT_MESSAGE_TO_LECTURE = gql`
   mutation insertMessageToLecture($lectureId: ID!, $message: MessageInput!) {
     insertMessageToLecture(lectureId: $lectureId, message: $message) {
       _id
-      title
       conversation {
         _id
         text

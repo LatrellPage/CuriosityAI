@@ -36,6 +36,7 @@ const resolvers = {
 		},
 
 		getUserLectures: async (_, { userId }) => {
+			console.log("queried lectures")
 			try {
 				const user = await User.findById(userId).populate("lectures");
 				if (!user) {
@@ -62,8 +63,6 @@ const resolvers = {
 
 	Lecture: {
 		conversation: (lecture) => {
-			// console.log(lecture)
-			// The console.log above displays all the message in the terminal
 			return lecture.conversation.messages;
 		},
 	},
@@ -102,15 +101,18 @@ const resolvers = {
 					.join(" ");
 			};
 
+			const capName = capitalizeFullName(name);
+
+			console.log(capName);
+
 
 			// create new user with email and encrypted password
 			const newUser = new User({
-				name: capitalizeFullName(name),
+				name: capName,
 				email: email.toLowerCase(),
 				password: encryptedPassword,
 			});
 
-			console.log(capitalizeFullName(name));
 
 			// create a token
 			const token = jwt.sign(
@@ -210,7 +212,7 @@ const resolvers = {
 
 				lecture.conversation.messages.push({ text, sender });
 				await lecture.save();
-
+				console.log("successfully entered message")
 				return lecture;
 			} catch (error) {
 				throw new Error(`Failed to insert message: ${error.message}`);

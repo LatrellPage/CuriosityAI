@@ -1,12 +1,55 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import "../../index.css";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { useGoogleLogin } from "@react-oauth/google";
+import { useMutation } from "@apollo/react-hooks";
+import { useNavigate } from "react-router-dom";
+import { LOGIN_USER } from "../../queries";
+import { AuthContext } from "../../context/authContext";
 
 
 const Login = () => {
+	const context = useContext(AuthContext);
+	let navigate = useNavigate();
+	const [errors, setErrors] = useState([]);
+
+	const [loginUser] = useMutation(LOGIN_USER, {
+		update(proxy, { data: { loginUser: userData } }) {
+			context.login(userData);
+			navigate("/");
+			console.log("login was successful");
+		},
+		onError(err) {
+			console.log("there was an error registering the user");
+			setErrors(err.graphQLErrors);
+		},
+	});
+
+	const [values, setValues] = useState({ email: "", password: "" }); // Holds the form values
+
+	// This function updates the `values` state whenever an input changes.
+	const handleChange = (event) => {
+		setValues({ ...values, [event.target.name]: event.target.value });
+	};
+
+	// This function is called when the form is submitted.
+	const handleSubmit = (event) => {
+		console.log("form submitted", values);
+		event.preventDefault();
+		loginUser({
+			variables: {
+				loginInput: {
+					email: values.email,
+					password: values.password,
+				},
+			},
+		});
+	};
+
+
+
 	const [showPassword, setShowPassword] = useState(false);
 
 	const togglePasswordVisibility = () => {
@@ -35,7 +78,7 @@ const Login = () => {
 					</div>
 				</div>
 				<div className="auth-form">
-					<form>
+					<form onSubmit={handleSubmit}>
 						<h1 style={{ fontWeight: "400", fontSize: "1.5rem" }}>
 							Welcome to
 							<strong
@@ -142,6 +185,7 @@ const Login = () => {
 							name="email"
 							type="email"
 							required
+							onChange={handleChange}
 						/>
 
 						<p
@@ -181,6 +225,7 @@ const Login = () => {
 								name="password"
 								type={showPassword ? "text" : "password"}
 								required
+								onChange={handleChange}
 							/>
 							<div
 								style={{ flex: "1", cursor: "pointer" }}
@@ -233,6 +278,7 @@ const Login = () => {
 								backgroundColor: "#474859",
 								color: "white",
 							}}
+							type="submit"
 						>
 							Login
 						</button>

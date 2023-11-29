@@ -1,16 +1,37 @@
-import React from "react";
+import React, { useContext, useRef, useEffect } from "react";
 import "../../../index.css";
+import LectureContext from "../../../context/LectureContext";
+import { useQuery } from "@apollo/client";
+import { GET_LECTURE } from "../../../queries";
 
-const ConversationContainer = ({ messages }) => {
-	 const messagesToRender = messages.slice(1)
+const ConversationContainer = () => {
+
+	const { selectedLectureId } = useContext(LectureContext);
+
+	const { data, loading, error } = useQuery(GET_LECTURE, {
+		variables: { id: selectedLectureId },
+	});
+
+    const bottomRef = useRef(null);
+
+    useEffect(() => {
+        bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }, [data]);
+
+	if (loading) return <p>Loading...</p>;
+	if (error) return <p>Error: {error.message}</p>;
+
+	const messages = data?.getLecture?.conversation || [];
+
+	const messagesToRender = messages.slice(1);
 
 	return (
 		<div className="convo-container">
-			{messagesToRender.map((message, index) => (
+			{messagesToRender.map((message) => (
 				<Message
-					key={index}
-					role={message.role}
-					content={message.content}
+					key={message._id} // Assuming each message has a unique _id
+					role={message.sender === "user" ? "user" : "assistant"}
+					content={message.text}
 				/>
 			))}
 		</div>
@@ -19,7 +40,8 @@ const ConversationContainer = ({ messages }) => {
 
 const Message = ({ role, content }) => {
 	const messageClass = role === "user" ? "user-message" : "AI-container";
-	const profileContainer = role === "user" ? "profile-img-container" : "AiProfile";
+	const profileContainer =
+		role === "user" ? "profile-img-container" : "AiProfile";
 
 	return (
 		<div className={`message-container ${messageClass}`}>

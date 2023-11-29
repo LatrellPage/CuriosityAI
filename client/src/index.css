@@ -2,8 +2,9 @@
 @import "bootstrap/dist/css/bootstrap.min.css";
 
 :root {
-	--pri-color: #caf2d9;
-	--secondary-color: white;
+	--pri-color: #696b77;
+	--secondary-color: black;
+	--third-color: white;
 }
 
 html,
@@ -125,7 +126,7 @@ table {
 	background-color: var(--secondary-color);
 	color: black;
 	min-width: 300px;
-	box-shadow: 5px 0 10px rgba(128, 128, 128, 0.5);
+	border-right: 0.2px solid rgba(0, 0, 0, 0.121);
 }
 
 .sidebar-header {
@@ -144,9 +145,9 @@ table {
 	width: 90%;
 	border-radius: 10px;
 	height: 60%;
-	border: 0.2px solid whitesmoke;
+	border: 0.2px solid rgba(245, 245, 245, 0.232);
 	cursor: pointer;
-	color: black;
+	color: white;
 }
 
 .recent-chats-container {
@@ -179,7 +180,7 @@ table {
 }
 
 .AiProfile {
-	background-color: #b3eec9;
+	background-color: var(--pri-color);
 	border-radius: 2px;
 	object-fit: contain;
 	width: 2.5rem;
@@ -191,6 +192,7 @@ table {
 	font-size: 1.2rem;
 	font-weight: 700;
 	margin-left: 1rem;
+	color: white;
 }
 
 .recent-chats-container::-webkit-scrollbar {
@@ -228,7 +230,6 @@ input {
 	display: flex;
 	align-items: center;
 	width: 100%;
-	border-radius: 10px;
 	height: 3rem;
 }
 
@@ -242,6 +243,7 @@ input {
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: clip;
+	color: white;
 }
 
 .chat-container {
@@ -293,9 +295,13 @@ input {
 	width: 50%;
 	padding: 10px;
 	height: fit-content;
+	font-family:Verdana, Geneva, Tahoma, sans-serif;
+	font-size: 0.8rem;
+	line-height: 1.6;
 }
 
 .bottom-container {
+	margin-top: 1rem;
 	position: absolute;
 	bottom: 0;
 	right: 0;
@@ -317,7 +323,7 @@ input {
 	width: 60%;
 	height: 62%;
 	border-radius: 10px;
-	box-shadow: 0 0 10px rgba(0, 0.5, 0.5, 0.5);
+	border: solid rgba(0, 0, 0, 0.123) 0.2px
 }
 
 .text-area {
@@ -368,8 +374,9 @@ input {
 
 #sendBTN {
 	font-size: 2.5rem;
-	color: #b3eec9;
+	color: black;
 	cursor: pointer;
+	border-radius: 5px;
 }
 
 .text-area::-webkit-scrollbar {
@@ -398,7 +405,7 @@ input {
 	width: 90%;
 	height: 100%;
 	background-color: var(--secondary-color);
-	color: white;
+	color: black;
 	z-index: 2;
 	display: none;
 }
@@ -526,6 +533,7 @@ input {
 	}
 
 	.x-icon {
+		color: white;
 		display: block;
 	}
 
@@ -612,6 +620,7 @@ input {
 	}
 
 	.x-icon {
+		color: white;
 		display: block;
 	}
 
@@ -635,6 +644,7 @@ input {
 
 	.convo-container {
 		width: 100%;
+		height: 83%;
 	}
 
 	#sendBTN {

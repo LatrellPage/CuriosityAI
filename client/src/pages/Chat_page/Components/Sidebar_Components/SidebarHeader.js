@@ -14,7 +14,7 @@ const SidebarHeader = ({ closeSidePanel }) => {
 				icon={faX}
 				className="x-icon"
 				style={{
-					color: "#000000",
+					color: "white",
 					marginLeft: "4rem",
 					marginTop: "-2rem",
 					fontSize: "1rem",
@@ -38,6 +38,7 @@ const NewChatBTN = () => {
 			await createLecture({
 				variables: { userId: user?.userId },
 			});
+			
 			console.log(" successfully created lecture")
 		} catch (e) {
 			console.error("Error creating a lecture", e);
@@ -50,7 +51,7 @@ const NewChatBTN = () => {
 		<div className="new-chatBTN" onClick={handleCreateLecture}>
 			<FontAwesomeIcon
 				icon={faPlus}
-				style={{ color: "#000000", marginRight: "1rem" }}
+				style={{ color: "white", marginRight: "1rem" }}
 			/>
 			<div>New Lecture</div>
 		</div>

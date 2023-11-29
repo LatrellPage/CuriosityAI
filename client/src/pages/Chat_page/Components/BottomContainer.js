@@ -11,7 +11,7 @@ const BottomContainer = ({textareaValue, handleSendClick, handleTextareaChange})
 					<textarea
 						value={textareaValue}
 						onChange={handleTextareaChange}
-						placeholder="Send a Message"
+						placeholder="Message CuriosityAI..."
 						className="text-area"
 					></textarea>
 					<div className="submit-button-container">

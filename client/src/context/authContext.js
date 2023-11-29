@@ -11,7 +11,7 @@ if (localStorage.getItem("token")) {
 	if (decodedToken.exp * 1000 < Date.now()) {
 		localStorage.removeItem("token");
 	} else {
-		initialState.user = decodedToken; 
+		initialState.user = decodedToken;
 	}
 }
 
@@ -19,7 +19,8 @@ const AuthContext = createContext({
 	user: null,
 	login: (userData) => {},
 	logout: () => {},
-	setUser: () => {}, 
+	register: (userData) => {},
+	setUser: () => {},
 });
 
 function authReducer(state, action) {
@@ -47,16 +48,28 @@ function authReducer(state, action) {
 function AuthProvider(props) {
 	const [state, dispatch] = useReducer(authReducer, initialState);
 
-	
+	const register = (userData) => {
+        // Clear any existing token in local storage
+        localStorage.removeItem("token");
+
+        // Decode and set the new token, assuming it's part of userData
+        localStorage.setItem("token", userData.token);
+        const decodedToken = jwtDecode(userData.token);
+        dispatch({
+            type: "LOGIN",
+            payload: decodedToken,
+        });
+    };
+
 	const login = (userData) => {
 		localStorage.setItem("token", userData.token);
+		const decodedToken = jwtDecode(userData.token);
 		dispatch({
 			type: "LOGIN",
-			payload: userData,
+			payload: decodedToken,
 		});
 	};
 
-	
 	function logout() {
 		localStorage.removeItem("token");
 		dispatch({
@@ -64,7 +77,6 @@ function AuthProvider(props) {
 		});
 	}
 
-	
 	const setUser = () => {
 		const token = localStorage.getItem("token");
 		if (token) {
@@ -72,20 +84,19 @@ function AuthProvider(props) {
 			dispatch({
 				type: "SET_USER",
 				payload: {
-					...decodedToken, 
+					...decodedToken,
 				},
 			});
 		}
 	};
 
-	
 	useEffect(() => {
 		setUser();
 	}, []);
 
 	return (
 		<AuthContext.Provider
-			value={{ user: state.user, login, logout, setUser }}
+			value={{ user: state.user, login, logout, setUser, register }}
 			{...props}
 		/>
 	);
