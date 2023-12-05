@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect, } from "react";
 import "../../../../index.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -6,25 +6,20 @@ import {
 	faMessage,
 	faTrashCan,
 	faPen,
-	faGlobe,
-	faUser,
 } from "@fortawesome/free-solid-svg-icons";
 import { useQuery, useMutation } from "@apollo/client";
 import {
 	GET_USER_LECTURES,
 	UPDATE_LECTURE_SETTINGS,
 	DELETE_LECTURE,
+	GET_LECTURE,
 } from "../../../../queries";
 import { AuthContext } from "../../../../context/authContext";
 import LectureContext from "../../../../context/LectureContext";
 
 const RecentChatsContainer = () => {
-
 	const { user } = useContext(AuthContext);
 	const userId = user?.userId;
-
-
-
 
 	const { data, refetch } = useQuery(GET_USER_LECTURES, {
 		variables: { userId },
@@ -38,23 +33,18 @@ const RecentChatsContainer = () => {
 		}
 	}, [userId, refetch]);
 
-
-	// Define the mutation logic here (if needed)
-	// const handleMutation = (lectureId) => {
-
-	// };
-
 	const [selectedLectureId, setSelectedLectureId] = useState(null);
 	const [showIconsForLecture, setShowIconsForLecture] = useState(null);
 
 	const handleSelectLecture = (lectureId) => {
 		if (lectureId !== selectedLectureId) {
 			setSelectedLectureId(lectureId);
-			setShowIconsForLecture(lectureId); 
+			setShowIconsForLecture(lectureId);
 		} else {
-			setShowIconsForLecture(null); 
+			setShowIconsForLecture(null);
 		}
 	};
+
 
 	if (data && data.getUserLectures) {
 		return (
@@ -75,7 +65,7 @@ const RecentChatsContainer = () => {
 	}
 };
 
-const RecentChatItem = ({ _id, title, userId, isSelected, onSelect}) => {
+const RecentChatItem = ({ _id, title, userId, isSelected, onSelect }) => {
 	const [showIcons, setShowIcons] = useState(false);
 	const [chatTitleStyles, setChatTitleStyles] = useState({
 		width: "100%",
@@ -83,7 +73,6 @@ const RecentChatItem = ({ _id, title, userId, isSelected, onSelect}) => {
 
 	const [isModalOpen, setIsModalOpen] = useState(false);
 
-	
 	const itemStyle = {
 		justifyContent: showIcons ? "space-between" : "normal",
 		backgroundColor: isSelected ? "#696b77" : "",
@@ -91,7 +80,7 @@ const RecentChatItem = ({ _id, title, userId, isSelected, onSelect}) => {
 	};
 
 	const toggleIcons = (event) => {
-		event.stopPropagation(); 
+		event.stopPropagation();
 		setShowIcons(!showIcons);
 		setChatTitleStyles({
 			width: showIcons ? "80%" : "57%",
@@ -103,7 +92,7 @@ const RecentChatItem = ({ _id, title, userId, isSelected, onSelect}) => {
 	const handleClick = () => {
 		setSelectedLectureId(_id);
 		setShowIcons(!showIcons);
-		onSelect(_id)
+		onSelect(_id);
 	};
 
 	const openModal = () => {
@@ -140,17 +129,6 @@ const RecentChatItem = ({ _id, title, userId, isSelected, onSelect}) => {
 			});
 	};
 
-	const [professor, setProfessor] = useState("current-professor");
-	const [language, setLanguage] = useState("current-language");
-
-	const handleLanguageChange = (newLanguage) => {
-		setLanguage(newLanguage);
-	};
-
-	const handleProfessorChange = (newProfessor) => {
-		setProfessor(newProfessor);
-	};
-
 	const [updateLectureSettings] = useMutation(UPDATE_LECTURE_SETTINGS);
 
 	const handleSaveChanges = () => {
@@ -159,8 +137,6 @@ const RecentChatItem = ({ _id, title, userId, isSelected, onSelect}) => {
 				lectureId: _id,
 				settings: {
 					title: inputValue,
-					professor: professor,
-					language: language,
 				},
 			},
 		})
@@ -172,7 +148,12 @@ const RecentChatItem = ({ _id, title, userId, isSelected, onSelect}) => {
 				console.error("Error updating lecture settings", error);
 			});
 	};
-	
+
+	const data = useQuery(GET_LECTURE, {
+		variables: { id: _id },
+	});
+
+	const currentTitle = data?.data?.getLecture?.title
 
 	return (
 		<li className="recent-chat" onClick={handleClick} style={itemStyle}>
@@ -211,7 +192,7 @@ const RecentChatItem = ({ _id, title, userId, isSelected, onSelect}) => {
 							<input
 								class="input"
 								type="text"
-								value={inputValue}
+								value={currentTitle}
 								placeholder="Enter your title here"
 								style={{ width: "60%" }}
 								onChange={handleInputChange}
@@ -230,14 +211,7 @@ const RecentChatItem = ({ _id, title, userId, isSelected, onSelect}) => {
 							></button>
 						</header>
 						<section className="modal-card-body modal-section-reset">
-							<ProfessorSelectionDropDown
-								professor={professor}
-								onProfessorChange={handleProfessorChange}
-							/>
-							<LanguageSelectionDropdown
-								language={language}
-								onLanguageChange={handleLanguageChange}
-							/>
+							
 						</section>
 						<footer className="modal-card-foot modal-reset">
 							<button
@@ -252,108 +226,6 @@ const RecentChatItem = ({ _id, title, userId, isSelected, onSelect}) => {
 			)}
 			<input></input>
 		</li>
-	);
-};
-
-const ProfessorSelectionDropDown = ({ professor, onProfessorChange }) => {
-	return (
-		<div className="dropdown-container">
-			<div className="dropdown dropdown-reset position-dropdown">
-				<button
-					className="btn dropdown-toggle dropdown-reset"
-					type="button"
-					data-bs-toggle="dropdown"
-					aria-expanded="true"
-				>
-					<FontAwesomeIcon
-						icon={faUser}
-						style={{ color: "#000000", marginRight: "0.5rem" }}
-					/>
-					Professor
-				</button>
-
-				<ul className="dropdown-menu dropdown-styles">
-					<li>
-						<button
-							className="dropdown-item "
-							type="button"
-							onClick={() => onProfessorChange("Turing")}
-						>
-							Turing
-						</button>
-					</li>
-					<li>
-						<button
-							className="dropdown-item"
-							type="button"
-							onClick={() => onProfessorChange("Professor2")}
-						>
-							Professor2
-						</button>
-					</li>
-					<li>
-						<button
-							className="dropdown-item"
-							type="button"
-							onClick={() => onProfessorChange("Professor3")}
-						>
-							Professor3
-						</button>
-					</li>
-				</ul>
-			</div>
-		</div>
-	);
-};
-
-const LanguageSelectionDropdown = ({ language, onLanguageChange }) => {
-	return (
-		<div className="dropdown-container">
-			<div className="dropdown dropdown-reset position-dropdown">
-				<button
-					className="btn  dropdown-toggle dropdown-reset"
-					type="button"
-					data-bs-toggle="dropdown"
-					aria-expanded="false"
-				>
-					<FontAwesomeIcon
-						icon={faGlobe}
-						style={{ color: "#000000", marginRight: "0.5rem" }}
-					/>
-					{language}
-				</button>
-
-				<ul className="dropdown-menu position-dropdown dropdown-styles">
-					<li>
-						<button
-							className="dropdown-item"
-							type="button"
-							onClick={() => onLanguageChange("English")}
-						>
-							English
-						</button>
-					</li>
-					<li>
-						<button
-							className="dropdown-item"
-							type="button"
-							onClick={() => onLanguageChange("Spanish")}
-						>
-							Spanish
-						</button>
-					</li>
-					<li>
-						<button
-							className="dropdown-item"
-							type="button"
-							onClick={() => onLanguageChange("French")}
-						>
-							French
-						</button>
-					</li>
-				</ul>
-			</div>
-		</div>
 	);
 };
 

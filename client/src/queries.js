@@ -31,8 +31,6 @@ export const CREATE_LECTURE = gql`
     createLecture(userId: $userId) {
       _id
       title
-      language
-      professor
       userId
     }
   }
@@ -81,6 +79,11 @@ export const GET_USER_LECTURES = gql`
       title
       language
       professor
+      conversation {
+        _id
+        text
+        sender
+      }
     }
   }
 `;

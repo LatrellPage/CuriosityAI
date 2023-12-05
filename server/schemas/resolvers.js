@@ -36,7 +36,6 @@ const resolvers = {
 		},
 
 		getUserLectures: async (_, { userId }) => {
-			console.log("queried lectures")
 			try {
 				const user = await User.findById(userId).populate("lectures");
 				if (!user) {
@@ -142,7 +141,7 @@ const resolvers = {
 			// if user exist compare input password to encrypted password
 			if (user && (await bcrypt.compare(password, user.password))) {
 				const token = jwt.sign(
-					{ userId: user._id, email },
+					{ userId: user._id, name: user.name, email },
 					process.env.SECRET_KEY,
 					{
 						expiresIn: "1h",
@@ -224,14 +223,6 @@ const resolvers = {
 				const lecture = await Lecture.findById(lectureId);
 				if (!lecture) {
 					throw new Error("Lecture not found");
-				}
-
-				// Update the lecture's properties with provided settings
-				if (settings.professor) {
-					lecture.professor = settings.professor;
-				}
-				if (settings.language) {
-					lecture.language = settings.language;
 				}
 
 				if (settings.title) {

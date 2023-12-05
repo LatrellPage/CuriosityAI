@@ -59,6 +59,7 @@ function AuthProvider(props) {
             type: "LOGIN",
             payload: decodedToken,
         });
+		console.log(decodedToken)
     };
 
 	const login = (userData) => {
@@ -68,6 +69,7 @@ function AuthProvider(props) {
 			type: "LOGIN",
 			payload: decodedToken,
 		});
+		console.log(decodedToken)
 	};
 
 	function logout() {

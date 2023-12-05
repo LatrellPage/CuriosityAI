@@ -15,8 +15,6 @@ const typeDefs = gql`
 	type Lecture {
 		_id: ID!
 		title: String!
-		language: String
-		professor: String
 		conversation: [Message]
 		userId: ID
 	}
@@ -57,8 +55,6 @@ const typeDefs = gql`
 	# Input type for updating lecture settings
 	input LectureSettingsInput {
 		title: String
-		language: String
-		professor: String
 	}
 
 	type Mutation {

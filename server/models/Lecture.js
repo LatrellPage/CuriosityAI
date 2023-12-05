@@ -5,16 +5,6 @@ const lectureSchema = new mongoose.Schema({
 		type: String,
 		required: true,
 	},
-	language: {
-		type: String,
-		default: "English",
-		enum: ["English", "Spanish", "French"],
-	},
-	professor: {
-		type: String,
-		default: "Turing",
-		enum: ["Turing", "Professor2", "Professor3"],
-	},
 	conversation: {
 		messages: [
 			{
