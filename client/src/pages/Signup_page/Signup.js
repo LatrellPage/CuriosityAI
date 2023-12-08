@@ -38,7 +38,6 @@ const Signup = () => {
 
 	// This function is called when the form is submitted.
 	const handleSubmit = (event) => {
-		console.log("form submitted", values);
 		event.preventDefault();
 		registerUser({
 			variables: {

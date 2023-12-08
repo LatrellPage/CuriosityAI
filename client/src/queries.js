@@ -27,8 +27,8 @@ export const LOGIN_USER = gql`
 
 // Mutation to create a new lecture
 export const CREATE_LECTURE = gql`
-  mutation createLecture($userId: ID!) {
-    createLecture(userId: $userId) {
+  mutation createLecture {
+    createLecture {
       _id
       title
       userId
@@ -70,15 +70,12 @@ export const DELETE_LECTURE = gql`
   }
 `;
 
-
-// Query to get lectures for a specific user
+// Mutation to get user lectures
 export const GET_USER_LECTURES = gql`
-  query getUserLectures($userId: ID!) {
-    getUserLectures(userId: $userId) {
+  query getUserLectures {
+    getUserLectures {
       _id
       title
-      language
-      professor
       conversation {
         _id
         text
@@ -88,14 +85,13 @@ export const GET_USER_LECTURES = gql`
   }
 `;
 
+
 // Query to get a single lecture
 export const GET_LECTURE = gql`
   query getLecture($id: ID!) {
     getLecture(id: $id) {
       _id
       title
-      language
-      professor
       conversation {
         _id
         text

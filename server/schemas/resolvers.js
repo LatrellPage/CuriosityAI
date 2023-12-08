@@ -26,7 +26,10 @@ const resolvers = {
 			}
 		},
 
-		getLecture: async (_, { id }) => {
+		getLecture: async (_, { id }, context) => {
+			if (!context.user) {
+				throw new ApolloError("Not authenticated", "UNAUTHENTICATED");
+			}
 			try {
 				const lecture = await Lecture.findById(id);
 				return lecture;
@@ -35,8 +38,13 @@ const resolvers = {
 			}
 		},
 
-		getUserLectures: async (_, { userId }) => {
+		getUserLectures: async (_, __, context) => {
+			if (!context.user) {
+				throw new ApolloError("Not authenticated", "UNAUTHENTICATED");
+			}
 			try {
+				const userId = context.user.userId;
+
 				const user = await User.findById(userId).populate("lectures");
 				if (!user) {
 					throw new Error("User not found");
@@ -161,36 +169,40 @@ const resolvers = {
 			}
 		},
 
-		createLecture: async (_, args) => {
+		createLecture: async (_, __ ,context) => {
+			
+			if (!context.user) {
+				throw new ApolloError("Not authenticated", "UNAUTHENTICATED");
+			}
 			try {
-				const { userId } = args;
-
+				
+				const userId = context.user.userId;
+		
 				const lecture = new Lecture({
 					title: "New Lecture",
-					language: "English",
-					professor: "Turing",
 					userId,
 				});
-
+		
 				await lecture.save();
-
-				// Also save the lecture to the user's lectures list
+		
 				const user = await User.findById(userId);
 				if (!user) {
 					throw new Error("User not found");
 				}
 				user.lectures.push(lecture);
 				await user.save();
-
-				console.log("You have successfully created a lecture.");
+		
 				return lecture;
 			} catch (error) {
 				throw new Error(`Lecture creation failed: ${error.message}`);
 			}
 		},
+		
 
-		deleteLecture: async (_, { id }) => {
-			// authMiddleware(context.req, context.res);
+		deleteLecture: async (_, { id }, context) => {
+			if (!context.user) {
+				throw new ApolloError("Not authenticated", "UNAUTHENTICATED");
+			}
 
 			try {
 				await Lecture.findByIdAndDelete(id);
@@ -200,7 +212,10 @@ const resolvers = {
 			}
 		},
 
-		insertMessageToLecture: async (_, { lectureId, message }) => {
+		insertMessageToLecture: async (_, { lectureId, message }, context) => {
+			if (!context.user) {
+				throw new ApolloError("Not authenticated", "UNAUTHENTICATED");
+			}
 			try {
 				const lecture = await Lecture.findById(lectureId);
 				if (!lecture) {
@@ -218,7 +233,10 @@ const resolvers = {
 			}
 		},
 
-		updateLectureSettings: async (_, { lectureId, settings }) => {
+		updateLectureSettings: async (_, { lectureId, settings }, context) => {
+			if (!context.user) {
+				throw new ApolloError("Not authenticated", "UNAUTHENTICATED");
+			}
 			try {
 				const lecture = await Lecture.findById(lectureId);
 				if (!lecture) {

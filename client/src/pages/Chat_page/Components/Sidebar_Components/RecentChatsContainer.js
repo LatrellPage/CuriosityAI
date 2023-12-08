@@ -21,11 +21,8 @@ const RecentChatsContainer = () => {
 	const { user } = useContext(AuthContext);
 	const userId = user?.userId;
 
-	const { data, refetch } = useQuery(GET_USER_LECTURES, {
-		variables: { userId },
-		skip: !userId,
-		fetchPolicy: "cache-and-network",
-	});
+	const { data, refetch } = useQuery(GET_USER_LECTURES);
+
 
 	useEffect(() => {
 		if (userId) {
@@ -44,6 +41,7 @@ const RecentChatsContainer = () => {
 			setShowIconsForLecture(null);
 		}
 	};
+
 
 
 	if (data && data.getUserLectures) {

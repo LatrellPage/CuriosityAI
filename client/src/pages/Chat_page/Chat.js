@@ -41,7 +41,10 @@ const Chat = () => {
 		variables: { id: selectedLectureId },
 	});
 
+	const [loading, setLoading] = useState(false);
+
 	const handleSendClick = async () => {
+		setLoading(true)
 		try {
 			// Check if textareaValue is null or empty
 			if (!textareaValue) {
@@ -74,7 +77,6 @@ const Chat = () => {
 
 			const messages = data?.data?.getLecture?.conversation;
 
-			console.log(messages);
 
 			// Loop through the messages and insert them into a new array
 			let formattedMessages = [];
@@ -135,7 +137,7 @@ const Chat = () => {
 						},
 					],
 				});
-
+				setLoading(false);
 				// Log success message if the mutation is successful
 				console.log("The AI's message was successfully inserted");
 			} catch (error) {
@@ -219,7 +221,7 @@ const Chat = () => {
 
 	const userId = user?.userId;
 	const [createLecture] = useMutation(CREATE_LECTURE, {
-		refetchQueries: [{ query: GET_USER_LECTURES, variables: { userId } }],
+		refetchQueries: [{ query: GET_USER_LECTURES}],
 	});
 
 	const isLectureCreationInProgress = useRef(false);
@@ -239,10 +241,10 @@ const Chat = () => {
 			if (!lectureId && !isLectureCreationInProgress.current) {
 				isLectureCreationInProgress.current = true;
 				try {
-					const newLectureResponse = await createLecture({
-						variables: { userId: user?.userId },
-					});
+					const newLectureResponse = await createLecture();
+
 					lectureId = newLectureResponse.data.createLecture._id;
+
 					console.log("Successfully created lecture", lectureId);
 					setSelectedLectureId(lectureId);
 				} catch (e) {
@@ -338,6 +340,7 @@ const Chat = () => {
 					textareaValue={textareaValue}
 					handleTextareaChange={handleTextareaChange}
 					handleSendClick={handleSendClick}
+					loading={loading}
 				/>
 			</div>
 		</LectureContext.Provider>

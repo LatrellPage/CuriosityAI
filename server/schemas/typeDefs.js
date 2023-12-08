@@ -31,7 +31,7 @@ const typeDefs = gql`
 		getUser(id: ID!): User
 		getAllUsers: [User]
 		getLecture(id: ID!): Lecture
-		getUserLectures(userId: ID!): [Lecture!]!
+		getUserLectures: [Lecture!]!
 		getAllLectures: [Lecture]
 	}
 
@@ -61,7 +61,7 @@ const typeDefs = gql`
 		registerUser(registerInput: RegisterInput): User
 		loginUser(loginInput: LoginInput): User
 		deleteLecture(id: ID!): String
-		createLecture(userId: ID!): Lecture
+		createLecture: Lecture
 		insertMessageToLecture(lectureId: ID!, message: MessageInput!): Lecture
 		updateLectureSettings(lectureId: ID!, settings: LectureSettingsInput!): Lecture
 	}

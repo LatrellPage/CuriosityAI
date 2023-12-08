@@ -7,6 +7,17 @@
 	--third-color: white;
 }
 
+/* In your CSS file */
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+
 html,
 body,
 div,
@@ -180,10 +191,10 @@ table {
 	overflow: hidden;
 }
 
-.profile-img-container img{
-	width: 100%; 
-    height: 100%; 
-    object-fit: cover;
+.profile-img-container img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
 }
 
 .AiProfile {
@@ -302,7 +313,7 @@ input {
 	width: 50%;
 	padding: 10px;
 	height: fit-content;
-	font-family:Verdana, Geneva, Tahoma, sans-serif;
+	font-family: Verdana, Geneva, Tahoma, sans-serif;
 	font-size: 0.8rem;
 	line-height: 1.6;
 }
@@ -330,7 +341,7 @@ input {
 	width: 60%;
 	height: 62%;
 	border-radius: 10px;
-	border: solid rgba(0, 0, 0, 0.123) 0.2px
+	border: solid rgba(0, 0, 0, 0.123) 0.2px;
 }
 
 .text-area {
@@ -380,7 +391,7 @@ input {
 }
 
 #sendBTN {
-	font-size: 2.5rem;
+	font-size: 2.2rem;
 	color: black;
 	cursor: pointer;
 	border-radius: 5px;
@@ -553,6 +564,7 @@ input {
 		height: 10%;
 		background-color: white;
 	}
+	
 
 	.text-container {
 		width: 80%;

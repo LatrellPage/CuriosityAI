@@ -6,7 +6,6 @@ import { AuthContext} from '../../../../context/authContext';
 const SidebarFooter = () => {
 	const { user } = useContext(AuthContext);
 	const name = user?.name;
-	console.log(name)
 
 	
 
