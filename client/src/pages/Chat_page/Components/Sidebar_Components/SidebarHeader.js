@@ -76,9 +76,6 @@ const NewChatBTN = () => {
 				},
 			});
 
-			console.log(
-				"The initial message was successfully inserted"
-			);
 
 			const response = await openai.chat.completions.create({
 				model: "gpt-3.5-turbo",
@@ -104,9 +101,6 @@ const NewChatBTN = () => {
 				},
 			});
 
-			console.log(
-				"The AI's initial message was successfully inserted"
-			);
 
 			
 		} catch (e) {

@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect} from "react";
 import "../../index.css";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -8,12 +8,14 @@ import { useMutation } from "@apollo/react-hooks";
 import { useNavigate } from "react-router-dom";
 import { LOGIN_USER } from "../../queries";
 import { AuthContext } from "../../context/authContext";
+import Alert from '@mui/material/Alert';
 
 
 const Login = () => {
 	const context = useContext(AuthContext);
 	let navigate = useNavigate();
-	const [errors, setErrors] = useState([]);
+	const [errors, setErrors] = useState();
+
 
 	const [loginUser] = useMutation(LOGIN_USER, {
 		update(proxy, { data: { loginUser: userData } }) {
@@ -23,7 +25,8 @@ const Login = () => {
 		},
 		onError(err) {
 			console.log("there was an error registering the user");
-			setErrors(err.graphQLErrors);
+			console.log(err.graphQLErrors[0].message)
+			setErrors(err.graphQLErrors[0].message);
 		},
 	});
 
@@ -265,6 +268,9 @@ const Login = () => {
 								Remember Me?
 							</label>
 						</div>
+
+						{errors && <Alert style={{"marginTop": "1rem", "marginBottom": "-1rem"}} severity="error">{errors}</Alert>}
+
 						<button
 							style={{
 								height: "2.5rem",

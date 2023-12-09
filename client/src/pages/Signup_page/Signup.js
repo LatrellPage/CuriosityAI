@@ -11,11 +11,12 @@ import { useMutation } from "@apollo/react-hooks";
 import { useNavigate } from "react-router-dom";
 import { REGISTER_USER } from "../../queries";
 import { AuthContext } from "../../context/authContext";
+import Alert from '@mui/material/Alert';
 
 const Signup = () => {
 	const context = useContext(AuthContext);
 	let navigate = useNavigate();
-	const [errors, setErrors] = useState([]);
+	const [errors, setErrors] = useState();
 
 	const [registerUser, { loading }] = useMutation(REGISTER_USER, {
 		update(proxy, { data: { registerUser: userData } }) {
@@ -25,7 +26,7 @@ const Signup = () => {
 		},
 		onError(err) {
 			console.log("there was an error registering the user");
-			setErrors(err.graphQLErrors);
+			setErrors(err.graphQLErrors[0].message);
 		},
 	});
 
@@ -205,17 +206,19 @@ const Signup = () => {
 							/>
 						</div>
 					</div>
-					<p
+
+					{errors ? <Alert style={{"marginTop": "1rem", "marginBottom": "-1rem"}} severity="error">{errors}</Alert> : <p
 						style={{
 							fontSize: "1rem",
 							fontWeight: "400",
-							color: "grey",
+							color: "gray",
 							marginTop: "0.3rem",
 						}}
 					>
 						Must be 8 or more characters and contain at least 1
 						number and 1 special character.
-					</p>
+					</p>}
+					
 
 					<button
 						style={{

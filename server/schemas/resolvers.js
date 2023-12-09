@@ -84,10 +84,38 @@ const resolvers = {
 			if (existingUser) {
 				// If user exist throw error
 				throw new ApolloError(
-					`User with the ${email} already exists`,
+					`User with the email ${email} already exists`,
 					"USER_ALREADY_EXISTS"
 				);
 			}
+			if (password.length < 8) {
+				throw new ApolloError(
+					`The password must be at least 8 characters long.`,
+					"The password must be at least 8 characters long."
+				);
+			}
+
+			function containsNumberOrSymbol(str) {
+				const hasNumber = /\d/.test(str);
+				const hasSpecialSymbol = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/.test(str);
+
+				if(hasNumber && hasSpecialSymbol == true){
+					return true
+				} else {
+					return false
+				}
+			}
+
+			let passwordIsValid = containsNumberOrSymbol(password)
+
+			if(passwordIsValid == false){
+				throw new ApolloError(
+					`Password must contain a 1 number and 1 special character`,
+					"Password must contain a 1 number and 1 special character"
+				);
+			}
+
+			
 
 			// encrypt the password before storing into db
 			const encryptedPassword = await bcrypt.hash(password, 10);
@@ -97,8 +125,8 @@ const resolvers = {
 					throw new Error("Invalid name input");
 				}
 				return name
-					.replace(/\s+/g, " ") 
-					.trim() 
+					.replace(/\s+/g, " ")
+					.trim()
 					.split(" ")
 					.map(
 						(part) =>
@@ -112,14 +140,12 @@ const resolvers = {
 
 			console.log(capName);
 
-
 			// create new user with email and encrypted password
 			const newUser = new User({
 				name: capName,
 				email: email.toLowerCase(),
 				password: encryptedPassword,
 			});
-
 
 			// create a token
 			const token = jwt.sign(
@@ -165,39 +191,39 @@ const resolvers = {
 				};
 			} else {
 				// If user doesnt exist, return error
-				throw new ApolloError("incorrect password, INCORRECT_PASSWORD");
+				throw new ApolloError(
+					"Invalid credentials",
+					"INVALID_CREDENTIALS"
+				);
 			}
 		},
 
-		createLecture: async (_, __ ,context) => {
-			
+		createLecture: async (_, __, context) => {
 			if (!context.user) {
 				throw new ApolloError("Not authenticated", "UNAUTHENTICATED");
 			}
 			try {
-				
 				const userId = context.user.userId;
-		
+
 				const lecture = new Lecture({
 					title: "New Lecture",
 					userId,
 				});
-		
+
 				await lecture.save();
-		
+
 				const user = await User.findById(userId);
 				if (!user) {
 					throw new Error("User not found");
 				}
 				user.lectures.push(lecture);
 				await user.save();
-		
+
 				return lecture;
 			} catch (error) {
 				throw new Error(`Lecture creation failed: ${error.message}`);
 			}
 		},
-		
 
 		deleteLecture: async (_, { id }, context) => {
 			if (!context.user) {
@@ -226,7 +252,7 @@ const resolvers = {
 
 				lecture.conversation.messages.push({ text, sender });
 				await lecture.save();
-				console.log("successfully entered message")
+				console.log("successfully entered message");
 				return lecture;
 			} catch (error) {
 				throw new Error(`Failed to insert message: ${error.message}`);

@@ -57,8 +57,6 @@ export const UPDATE_LECTURE_SETTINGS = gql`
     updateLectureSettings(lectureId: $lectureId, settings: $settings) {
       _id
       title
-      language
-      professor
     }
   }
 `;
@@ -76,10 +74,12 @@ export const GET_USER_LECTURES = gql`
     getUserLectures {
       _id
       title
+      createdAt
       conversation {
         _id
         text
         sender
+        timestamp
       }
     }
   }

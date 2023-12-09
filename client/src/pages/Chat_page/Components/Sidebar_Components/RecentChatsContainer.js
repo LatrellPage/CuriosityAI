@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect, } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import "../../../../index.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -12,7 +12,6 @@ import {
 	GET_USER_LECTURES,
 	UPDATE_LECTURE_SETTINGS,
 	DELETE_LECTURE,
-	GET_LECTURE,
 } from "../../../../queries";
 import { AuthContext } from "../../../../context/authContext";
 import LectureContext from "../../../../context/LectureContext";
@@ -22,7 +21,6 @@ const RecentChatsContainer = () => {
 	const userId = user?.userId;
 
 	const { data, refetch } = useQuery(GET_USER_LECTURES);
-
 
 	useEffect(() => {
 		if (userId) {
@@ -42,12 +40,56 @@ const RecentChatsContainer = () => {
 		}
 	};
 
-
-
 	if (data && data.getUserLectures) {
+		function mergeSort(arr, compareFn) {
+			if (arr.length <= 1) {
+				return arr;
+			}
+
+			const middle = Math.floor(arr.length / 2);
+			const left = arr.slice(0, middle);
+			const right = arr.slice(middle);
+
+			return merge(
+				mergeSort(left, compareFn),
+				mergeSort(right, compareFn),
+				compareFn
+			);
+		}
+
+		function merge(left, right, compareFn) {
+			let resultArray = [],
+				leftIndex = 0,
+				rightIndex = 0;
+
+			while (leftIndex < left.length && rightIndex < right.length) {
+				if (compareFn(left[leftIndex], right[rightIndex]) <= 0) {
+					resultArray.push(left[leftIndex]);
+					leftIndex++;
+				} else {
+					resultArray.push(right[rightIndex]);
+					rightIndex++;
+				}
+			}
+
+			return resultArray
+				.concat(left.slice(leftIndex))
+				.concat(right.slice(rightIndex));
+		}
+
+		const lectures = data.getUserLectures; // Your array of lectures
+
+		const compareLectures = (lectureA, lectureB) => {
+			const dateA = new Date(lectureA.createdAt).getTime();
+			const dateB = new Date(lectureB.createdAt).getTime();
+			return dateB - dateA; // For descending order
+		};
+
+		const sortedLectures = mergeSort(lectures, compareLectures);
+
 		return (
 			<ol className="recent-chats-container">
-				{data.getUserLectures.map((lecture) => (
+				{sortedLectures.map((lecture) => (
 					<RecentChatItem
 						key={lecture._id}
 						_id={lecture._id}
@@ -99,9 +141,15 @@ const RecentChatItem = ({ _id, title, userId, isSelected, onSelect }) => {
 
 	const closeModal = () => {
 		setIsModalOpen(false);
+		setInputValue(title);
 	};
 
-	const [inputValue, setInputValue] = useState(`${title}`);
+	const [inputValue, setInputValue] = useState(title);
+
+	useEffect(() => {
+		// Reset inputValue to currentTitle when the modal opens or title changes
+		setInputValue(title);
+	}, [title]);
 
 	const handleInputChange = (event) => {
 		setInputValue(event.target.value);
@@ -139,19 +187,12 @@ const RecentChatItem = ({ _id, title, userId, isSelected, onSelect }) => {
 			},
 		})
 			.then((response) => {
-				console.log("Lecture settings updated successfully", response);
 				setIsModalOpen(false);
 			})
 			.catch((error) => {
 				console.error("Error updating lecture settings", error);
 			});
 	};
-
-	const data = useQuery(GET_LECTURE, {
-		variables: { id: _id },
-	});
-
-	const currentTitle = data?.data?.getLecture?.title
 
 	return (
 		<li className="recent-chat" onClick={handleClick} style={itemStyle}>
@@ -190,7 +231,7 @@ const RecentChatItem = ({ _id, title, userId, isSelected, onSelect }) => {
 							<input
 								class="input"
 								type="text"
-								value={currentTitle}
+								value={inputValue}
 								placeholder="Enter your title here"
 								style={{ width: "60%" }}
 								onChange={handleInputChange}
@@ -208,9 +249,7 @@ const RecentChatItem = ({ _id, title, userId, isSelected, onSelect }) => {
 								}}
 							></button>
 						</header>
-						<section className="modal-card-body modal-section-reset">
-							
-						</section>
+						<section className="modal-card-body modal-section-reset"></section>
 						<footer className="modal-card-foot modal-reset">
 							<button
 								className="button is-success"

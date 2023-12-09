@@ -44,14 +44,12 @@ const Chat = () => {
 	const [loading, setLoading] = useState(false);
 
 	const handleSendClick = async () => {
-		setLoading(true)
+		if (!textareaValue) {
+			console.error("Textarea value is empty or null");
+			return;
+		}
 		try {
-			// Check if textareaValue is null or empty
-			if (!textareaValue) {
-				console.error("Textarea value is empty or null");
-				return; // Prevent sending empty or null messages
-			}
-
+			setLoading(true)
 			setTextareaValue("");
 
 			// Prepare user message for the database
@@ -69,7 +67,6 @@ const Chat = () => {
 					},
 				});
 
-				console.log("The user's message was successfully inserted");
 			} catch (error) {
 				// Log error if the mutation fails
 				console.error("Error inserting message:", error);
@@ -139,7 +136,6 @@ const Chat = () => {
 				});
 				setLoading(false);
 				// Log success message if the mutation is successful
-				console.log("The AI's message was successfully inserted");
 			} catch (error) {
 				// Log error if the mutation fails
 				console.error("Error inserting the AI's message:", error);
@@ -176,7 +172,7 @@ const Chat = () => {
 					const response = await openai.chat.completions.create({
 						model: "gpt-3.5-turbo",
 						messages: messagesWithPrompt,
-						temperature: 1,
+						temperature: 0.3,
 						max_tokens: 256,
 						top_p: 1,
 						frequency_penalty: 0,
@@ -186,7 +182,6 @@ const Chat = () => {
 					// Check if response has choices and extract the title
 					if (response.choices && response.choices.length > 0) {
 						newTitle = response.choices[0].message.content;
-						console.log(newTitle);
 					} else {
 						console.error("Invalid response structure:", response);
 					}
@@ -204,7 +199,7 @@ const Chat = () => {
 							settings: { title: newTitle },
 						},
 						refetchQueries: [
-							{ query: GET_USER_LECTURES, variables: { userId } },
+							{ query: GET_USER_LECTURES},
 						],
 					});
 				} catch (error) {
@@ -245,7 +240,6 @@ const Chat = () => {
 
 					lectureId = newLectureResponse.data.createLecture._id;
 
-					console.log("Successfully created lecture", lectureId);
 					setSelectedLectureId(lectureId);
 				} catch (e) {
 					console.error("Error creating a lecture", e);
@@ -283,9 +277,6 @@ const Chat = () => {
 						},
 					});
 
-					console.log(
-						"The initial message was successfully inserted"
-					);
 
 					const response = await openai.chat.completions.create({
 						model: "gpt-3.5-turbo",
@@ -311,9 +302,6 @@ const Chat = () => {
 						},
 					});
 
-					console.log(
-						"The AI's initial message was successfully inserted"
-					);
 				} catch (error) {
 					console.error("Error in initial message setup:", error);
 				}
