@@ -151,6 +151,7 @@ const Chat = () => {
 
 			let newTitle;
 
+			// Once conversation is long enough to be summarized then send conversation history and the agent will summarize it
 			if (newConversationHistoryForAI.length === 7) {
 				const openai = new OpenAI({
 					apiKey: process.env.REACT_APP_OPENAI_API_KEY,
@@ -214,7 +215,6 @@ const Chat = () => {
 		}
 	};
 
-	const userId = user?.userId;
 	const [createLecture] = useMutation(CREATE_LECTURE, {
 		refetchQueries: [{ query: GET_USER_LECTURES}],
 	});
@@ -243,7 +243,7 @@ const Chat = () => {
 					setSelectedLectureId(lectureId);
 				} catch (e) {
 					console.error("Error creating a lecture", e);
-					isLectureCreationInProgress.current = false; // Reset flag on error
+					isLectureCreationInProgress.current = false; 
 					return;
 				}
 			}
@@ -309,7 +309,7 @@ const Chat = () => {
 		};
 
 		fetchData();
-	}, [user, selectedLectureId, user?.userId, firstName, initialSetupDone]);
+	}, [user, selectedLectureId, user?.userId, firstName, initialSetupDone, createLecture, insertMessageToLecture]);
 
 	return (
 		<LectureContext.Provider

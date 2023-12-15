@@ -2,7 +2,7 @@ const jwt = require("jsonwebtoken");
 require('dotenv').config();
 
 const authMiddleware = (req, res, next) => {
-    const token = req.headers.authorization || req.headers.Authorization;
+    const token = req.headers.authorization?.split(" ")[1] || req.headers.Authorization?.split(" ")[1];
 
     if (!token) {
         req.authError = "Authorization token is missing";

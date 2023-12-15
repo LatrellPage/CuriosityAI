@@ -11,9 +11,44 @@ import { useMutation } from "@apollo/react-hooks";
 import { useNavigate } from "react-router-dom";
 import { REGISTER_USER } from "../../queries";
 import { AuthContext } from "../../context/authContext";
-import Alert from '@mui/material/Alert';
+import Alert from "@mui/material/Alert";
 
 const Signup = () => {
+	const useGoogleSignupHandler = () => {
+		const authContext = useContext(AuthContext);
+
+		const handleGoogleSuccess = async (response) => {
+			try {
+				const res = await fetch(
+					"http://localhost:3001/api/auth/google",
+					{
+						method: "POST",
+						headers: {
+							"Content-Type": "application/json",
+						},
+						body: JSON.stringify({ code: response.code }),
+					}
+				);
+
+				const data = await res.json();
+				if (!res.ok) {
+					throw new Error(data.error || "Failed to authenticate");
+				}
+
+				// Store the token in local storage and update the context
+				localStorage.setItem("token", data.token);
+				authContext.register(data.user); // Use register
+
+			} catch (error) {
+				console.error("Error during Google signup:", error);
+			}
+		};
+
+		return handleGoogleSuccess;
+	};
+
+	const handleGoogleSignup = useGoogleSignupHandler();
+
 	const context = useContext(AuthContext);
 	let navigate = useNavigate();
 	const [errors, setErrors] = useState();
@@ -30,14 +65,12 @@ const Signup = () => {
 		},
 	});
 
-	const [values, setValues] = useState({ name: "", email: "", password: "" }); // Holds the form values
+	const [values, setValues] = useState({ name: "", email: "", password: "" }); 
 
-	// This function updates the `values` state whenever an input changes.
 	const handleChange = (event) => {
 		setValues({ ...values, [event.target.name]: event.target.value });
 	};
 
-	// This function is called when the form is submitted.
 	const handleSubmit = (event) => {
 		event.preventDefault();
 		registerUser({
@@ -59,8 +92,20 @@ const Signup = () => {
 
 	const eyeIcon = showPassword ? faEyeSlash : faEye;
 
-	const login = useGoogleLogin({
-		onSuccess: (codeResponse) => console.log(codeResponse),
+	const clientId =
+		"955396247779-g8ebte54c7ltemb1e5cq6ohluta47jtm.apps.googleusercontent.com";
+
+	const handleGoogleFailure = (error) => {
+		console.log("Login Failed:", error);
+		// Handle the error appropriately
+	};
+
+	const signup = useGoogleLogin({
+		clientId: clientId,
+		ux_mode: "redirect",
+		redirect_uri: "http://localhost:3001/api/auth/google",
+		onSuccess: handleGoogleSignup,
+		onFailure: handleGoogleFailure,
 		flow: "auth-code",
 	});
 
@@ -207,18 +252,26 @@ const Signup = () => {
 						</div>
 					</div>
 
-					{errors ? <Alert style={{"marginTop": "1rem", "marginBottom": "-1rem"}} severity="error">{errors}</Alert> : <p
-						style={{
-							fontSize: "1rem",
-							fontWeight: "400",
-							color: "gray",
-							marginTop: "0.3rem",
-						}}
-					>
-						Must be 8 or more characters and contain at least 1
-						number and 1 special character.
-					</p>}
-					
+					{errors ? (
+						<Alert
+							style={{ marginTop: "1rem", marginBottom: "-1rem" }}
+							severity="error"
+						>
+							{errors}
+						</Alert>
+					) : (
+						<p
+							style={{
+								fontSize: "1rem",
+								fontWeight: "400",
+								color: "gray",
+								marginTop: "0.3rem",
+							}}
+						>
+							Must be 8 or more characters and contain at least 1
+							number and 1 special character.
+						</p>
+					)}
 
 					<button
 						style={{
@@ -281,7 +334,7 @@ const Signup = () => {
 						></div>
 					</div>
 					<div className="socials-container">
-						<a onClick={() => login()}>
+						<a onClick={() => signup()}>
 							<img
 								style={{ width: "3rem", height: "3rem" }}
 								src="google-logo.webp"
@@ -318,4 +371,5 @@ const Signup = () => {
 		</div>
 	);
 };
+
 export default Signup;
