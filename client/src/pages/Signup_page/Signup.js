@@ -92,8 +92,7 @@ const Signup = () => {
 
 	const eyeIcon = showPassword ? faEyeSlash : faEye;
 
-	const clientId =
-		"955396247779-g8ebte54c7ltemb1e5cq6ohluta47jtm.apps.googleusercontent.com";
+	const clientId ="955396247779-g8ebte54c7ltemb1e5cq6ohluta47jtm.apps.googleusercontent.com";
 
 	const handleGoogleFailure = (error) => {
 		console.log("Login Failed:", error);

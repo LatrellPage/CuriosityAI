@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect} from "react";
+import React, { useState, useContext, useEffect } from "react";
 import "../../index.css";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -8,14 +8,58 @@ import { useMutation } from "@apollo/react-hooks";
 import { useNavigate } from "react-router-dom";
 import { LOGIN_USER } from "../../queries";
 import { AuthContext } from "../../context/authContext";
-import Alert from '@mui/material/Alert';
+import Alert from "@mui/material/Alert";
 
 
 const Login = () => {
+
+
+	const useGoogleLoginHandler = () => {
+		const authContext = useContext(AuthContext);
+	
+		const handleGoogleSuccess = async (response) => {
+			try {
+				const res = await fetch("http://localhost:3001/api/auth/google", {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify({ code: response.code }),
+				});
+	
+				const data = await res.json();
+				if (!res.ok) {
+					throw new Error(data.error || "Failed to authenticate");
+				}
+	
+				// Store the token in local storage and update the context
+				localStorage.setItem("token", data.token);
+				authContext.register(data.user); // Use register
+			} catch (error) {
+				console.error("Error during Google Login:", error);
+			}
+		};
+	
+		return handleGoogleSuccess;
+	};
+	
+	const handleGoogleLogin = useGoogleLoginHandler();
+	
+	const handleGoogleFailure = (error) => {
+		console.log("Login Failed:", error);
+		// Handle the error appropriately
+	};
+	
+	const clientId ="955396247779-g8ebte54c7ltemb1e5cq6ohluta47jtm.apps.googleusercontent.com";
+
+
+
+
+
+
 	const context = useContext(AuthContext);
 	let navigate = useNavigate();
 	const [errors, setErrors] = useState();
-
 
 	const [loginUser] = useMutation(LOGIN_USER, {
 		update(proxy, { data: { loginUser: userData } }) {
@@ -25,7 +69,7 @@ const Login = () => {
 		},
 		onError(err) {
 			console.log("there was an error registering the user");
-			console.log(err.graphQLErrors[0].message)
+			console.log(err.graphQLErrors[0].message);
 			setErrors(err.graphQLErrors[0].message);
 		},
 	});
@@ -51,8 +95,6 @@ const Login = () => {
 		});
 	};
 
-
-
 	const [showPassword, setShowPassword] = useState(false);
 
 	const togglePasswordVisibility = () => {
@@ -68,7 +110,11 @@ const Login = () => {
 	};
 
 	const login = useGoogleLogin({
-		onSuccess: (codeResponse) => console.log(codeResponse),
+		clientId: clientId,
+		ux_mode: "redirect",
+		redirect_uri: "http://localhost:3001/api/auth/google",
+		onSuccess: handleGoogleLogin,
+		onFailure: handleGoogleFailure,
 		flow: "auth-code",
 	});
 
@@ -114,7 +160,6 @@ const Login = () => {
 								alignItems: "center",
 								cursor: "pointer",
 							}}
-
 							onClick={() => login()}
 						>
 							<img
@@ -269,7 +314,17 @@ const Login = () => {
 							</label>
 						</div>
 
-						{errors && <Alert style={{"marginTop": "1rem", "marginBottom": "-1rem"}} severity="error">{errors}</Alert>}
+						{errors && (
+							<Alert
+								style={{
+									marginTop: "1rem",
+									marginBottom: "-1rem",
+								}}
+								severity="error"
+							>
+								{errors}
+							</Alert>
+						)}
 
 						<button
 							style={{
