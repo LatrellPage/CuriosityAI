@@ -685,19 +685,17 @@ input {
 		height: 10%;
 	}
 
-	.text-area {
-		background-color: #696b77;
-		color: white;
+	.text-area {;
+		color: black;
 		height: 20%;
 	}
 
 	.text-area::placeholder {
-		color: white;
+		color: black;
 		margin-top: -1rem;
 	}
 
 	.text-container {
-		background-color: #696b77;
 		height: 80%;
 	}
 

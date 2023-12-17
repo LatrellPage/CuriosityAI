@@ -47,7 +47,6 @@ const Login = () => {
 	
 	const handleGoogleFailure = (error) => {
 		console.log("Login Failed:", error);
-		// Handle the error appropriately
 	};
 	
 	const clientId ="955396247779-g8ebte54c7ltemb1e5cq6ohluta47jtm.apps.googleusercontent.com";
@@ -336,7 +335,7 @@ const Login = () => {
 								marginTop: "2rem",
 								borderRadius: "5px",
 								border: "0",
-								backgroundColor: "#474859",
+								backgroundColor: "black",
 								color: "white",
 							}}
 							type="submit"

@@ -21,7 +21,7 @@ app.use(cors());
 
 app.get("/api/auth/google", async (req, res) => {
 	try {
-		const code = req.query.code; 
+		const code = req.query.code;
 
 		const tokenResponse = await fetch(
 			"https://oauth2.googleapis.com/token",
@@ -104,11 +104,10 @@ app.get("/api/auth/google", async (req, res) => {
 });
 
 function validateTokenAndGetUserData(token) {
-
 	const tokenWithoutBearer = token.split(" ")[1];
 
 	const decoded = jwt.verify(tokenWithoutBearer, process.env.SECRET_KEY);
-	return decoded; 
+	return decoded;
 }
 
 const server = new ApolloServer({
