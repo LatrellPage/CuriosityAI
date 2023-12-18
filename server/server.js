@@ -34,7 +34,7 @@ app.get("/api/auth/google", async (req, res) => {
 					code,
 					client_id: process.env.GOOGLE_CLIENT_ID,
 					client_secret: process.env.GOOGLE_CLIENT_SECRET,
-					redirect_uri: "http://localhost:3001/api/auth/google",
+					redirect_uri: "https://calm-plains-24036-d1dbec7026c8.herokuapp.com/api/auth/google",
 					grant_type: "authorization_code",
 				}),
 			}

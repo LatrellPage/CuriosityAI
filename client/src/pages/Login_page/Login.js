@@ -19,7 +19,7 @@ const Login = () => {
 	
 		const handleGoogleSuccess = async (response) => {
 			try {
-				const res = await fetch("http://localhost:3001/api/auth/google", {
+				const res = await fetch("https://calm-plains-24036-d1dbec7026c8.herokuapp.com/api/auth/google", {
 					method: "POST",
 					headers: {
 						"Content-Type": "application/json",
