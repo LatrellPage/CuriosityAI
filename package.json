@@ -17,5 +17,8 @@
   "bugs": {
     "url": "https://github.com/LatrellPage/CuriosityAI/issues"
   },
-  "homepage": "https://github.com/LatrellPage/CuriosityAI#readme"
+  "homepage": "https://github.com/LatrellPage/CuriosityAI#readme",
+  "dependencies": {
+    "dotenv": "^16.3.1"
+  }
 }
