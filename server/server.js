@@ -96,7 +96,7 @@ app.get("/api/auth/google", async (req, res) => {
 
 		const userDataQueryString = convertToQueryString(userData);
 
-		res.redirect(`http://localhost:3000/?userData=${userDataQueryString}`);
+		res.redirect(`https://calm-plains-24036-d1dbec7026c8.herokuapp.com/?userData=${userDataQueryString}`);
 	} catch (error) {
 		console.error("Server Error:", error);
 		res.status(500).json({ error: "Internal Server Error" });
