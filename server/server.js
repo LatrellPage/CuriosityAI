@@ -1,6 +1,6 @@
 require("dotenv").config();
 const express = require("express");
-const fetch = require("node-fetch"); // Required for making HTTP requests to Google's token endpoint
+const fetch = require("node-fetch"); 
 const { ApolloServer } = require("apollo-server-express");
 const { typeDefs, resolvers } = require("./schemas");
 const db = require("./config/connection");
