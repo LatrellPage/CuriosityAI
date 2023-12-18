@@ -111,7 +111,7 @@ const Login = () => {
 	const login = useGoogleLogin({
 		clientId: clientId,
 		ux_mode: "redirect",
-		redirect_uri: "http://localhost:3001/api/auth/google",
+		redirect_uri: "https://calm-plains-24036-d1dbec7026c8.herokuapp.com/api/auth/google",
 		onSuccess: handleGoogleLogin,
 		onFailure: handleGoogleFailure,
 		flow: "auth-code",
