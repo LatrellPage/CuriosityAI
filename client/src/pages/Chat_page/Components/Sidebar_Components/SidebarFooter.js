@@ -22,8 +22,11 @@ const SidebarFooter = () => {
 					</Avatar>
 			</div>
 			<h2 className="profile-name">{ name }</h2>
+			
 		</div>
 	);
 };
+
+
 
 export default SidebarFooter;

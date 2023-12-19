@@ -1,17 +1,19 @@
 import React, { useContext } from "react";
 import "../../../../index.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faX, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faX, faPlus} from "@fortawesome/free-solid-svg-icons";
 import { useMutation } from "@apollo/client";
 import { CREATE_LECTURE, GET_USER_LECTURES, INSERT_MESSAGE_TO_LECTURE } from "../../../../queries";
 import { AuthContext } from "../../../../context/authContext";
 import LectureContext from "../../../../context/LectureContext"
 import OpenAI from "openai";
+import { faArrowRightFromBracket } from "@fortawesome/free-solid-svg-icons";
 
 
 const SidebarHeader = ({ closeSidePanel }) => {
 	return (
 		<div className="sidebar-header">
+			<LogoutButton />
 			<NewChatBTN />
 			<FontAwesomeIcon
 				icon={faX}
@@ -120,5 +122,17 @@ const NewChatBTN = () => {
 		</div>
 	);
 };
+
+const LogoutButton = () => {
+	const { logout } = useContext(AuthContext)
+
+	return (
+		<>
+			<FontAwesomeIcon onClick={logout} icon={faArrowRightFromBracket} size="lg"  style={{color: "#ddd", marginLeft: "2rem", marginRight: "1rem", cursor: "pointer"}} />
+		</>
+	)
+};
+
+
 
 export default SidebarHeader;
