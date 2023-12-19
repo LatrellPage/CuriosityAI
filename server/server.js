@@ -145,9 +145,6 @@ const startApolloServer = async () => {
 
 	app.listen(PORT, () => {
 		console.log(`API server running on port ${PORT}!`);
-		console.log(
-			`GraphQL endpoint available at https://calm-plains-24036-d1dbec7026c8.herokuapp.com/${server.graphqlPath}`
-		);
 	});
 };
 

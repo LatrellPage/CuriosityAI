@@ -10,12 +10,4 @@ mongoose.connect(
 
 const db = mongoose.connection;
 
-db.dropDatabase()
-  .then(() => {
-    console.log('Database dropped successfully.');
-  })
-  .catch((err) => {
-    console.error('Error dropping database:', err);
-  });
-
 module.exports = db;
