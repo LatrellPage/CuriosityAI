@@ -131,6 +131,7 @@ const server = new ApolloServer({
 });
 
 if (process.env.NODE_ENV === "production") {
+	express.static.mime.define({ 'image/jpeg': ['jpg'] });
 	app.use(express.static(path.join(__dirname, "../client/build")));
 
 	app.get("*", (req, res) => {
