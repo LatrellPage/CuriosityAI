@@ -59,7 +59,7 @@ const Message = ({ role, content }) => {
 					</Avatar>
 				) : (
 					<img
-						src="robotThinking.jpg" 
+						src="public/robotThinking.jpg" 
 						alt="AI Avatar"
 						className="profile-avatar"
 					/>
