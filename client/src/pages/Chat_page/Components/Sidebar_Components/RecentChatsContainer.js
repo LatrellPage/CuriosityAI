@@ -77,7 +77,7 @@ const RecentChatsContainer = () => {
 				.concat(right.slice(rightIndex));
 		}
 
-		const lectures = data.getUserLectures; // Your array of lectures
+		const lectures = data.getUserLectures; 
 
 		const compareLectures = (lectureA, lectureB) => {
 			const dateA = new Date(lectureA.createdAt).getTime();
@@ -115,7 +115,7 @@ const RecentChatItem = ({ _id, title, userId, isSelected, onSelect }) => {
 
 	const itemStyle = {
 		justifyContent: showIcons ? "space-between" : "normal",
-		backgroundColor: isSelected ? "#696b77" : "",
+		backgroundColor: isSelected ? "rgba(0, 0, 0, 0.853)" : "",
 		...chatTitleStyles,
 	};
 
@@ -249,9 +249,10 @@ const RecentChatItem = ({ _id, title, userId, isSelected, onSelect }) => {
 								}}
 							></button>
 						</header>
-						<section className="modal-card-body modal-section-reset"></section>
+						<section style={{height: "0px"}} className="modal-card-body modal-section-reset"></section>
 						<footer className="modal-card-foot modal-reset">
 							<button
+								style={{backgroundColor: "black", color: "white"}}
 								className="button is-success"
 								onClick={handleSaveChanges}
 							>

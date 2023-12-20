@@ -77,12 +77,22 @@ function AuthProvider(props) {
 	
 
     const logout = () => {
-        // Remove query parameters from url
+        
         const baseUrl = window.location.href.split("?")[0];
         window.location.href = baseUrl
 
         localStorage.removeItem("token");
         dispatch({ type: "LOGOUT" });
+        
+        let tokenExist = localStorage.getItem("token");
+
+        // double check that token is removed if not removed then remove it
+        if(tokenExist){
+            localStorage.removeItem("token");
+        dispatch({ type: "LOGOUT" });
+        }
+
+        
     };
 
     const register = (userData) => {

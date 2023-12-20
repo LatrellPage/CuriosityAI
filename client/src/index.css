@@ -372,6 +372,7 @@ input {
 }
 
 .modal-section-reset {
+	height: 0px;
 	overflow-y: hidden;
 	overflow-x: hidden;
 	display: flex;
@@ -704,6 +705,7 @@ input {
 	}
 
 	.modal-div-reset {
+		background-color: rgba(0, 0, 0, 0.853);
 		height: 40%;
 		width: 95%;
 		min-height: 23rem;
@@ -716,6 +718,10 @@ input {
 
 	.msg {
 		width: 70%;
+	}
+
+	.modal-section-reset {
+		height: 0px;
 	}
 }
 
