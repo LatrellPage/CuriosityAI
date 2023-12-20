@@ -115,7 +115,7 @@ const RecentChatItem = ({ _id, title, userId, isSelected, onSelect }) => {
 
 	const itemStyle = {
 		justifyContent: showIcons ? "space-between" : "normal",
-		backgroundColor: isSelected ? "rgba(0, 0, 0, 0.853)" : "",
+		backgroundColor: isSelected ? "rgba(0, 0, 0, 0.699)" : "",
 		...chatTitleStyles,
 	};
 
