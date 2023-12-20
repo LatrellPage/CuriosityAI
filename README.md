@@ -4,7 +4,7 @@
 
 CuriosityAI is an intelligent chatbot and conversation management system designed to provide an informative and engaging experience for users with a humor and curiosity philosophy. It incorporates various features and functionalities to enhance the user experience.
 
-[Video Demonstration](https://github.com/LatrellPage/CuriosityAI/assets/127454292/23ca7a96-420b-41f0-b7ec-8801fa76bc69)
+(https://github.com/LatrellPage/CuriosityAI/assets/127454292/23ca7a96-420b-41f0-b7ec-8801fa76bc69)
 [Live Demo](https://calm-plains-24036-d1dbec7026c8.herokuapp.com/)
 
 
