@@ -70,10 +70,8 @@ app.get("/api/auth/google", async (req, res) => {
 					name: userInfo.name,
 				});
 			} catch (mongoError){
-				if (mongoError.code === "E11000") {
-					return res.status(400).json({error: "Email already exist in CuriosityAI database."})
-				} else {
-					return res.status(500).json({ error: "Internal server error:", mongoError})
+				if (mongoError) {
+					return res.status(400).json("This email already exist in CuriosityAI database.")
 				}
 			}
 		}
