@@ -79,6 +79,10 @@ function AuthProvider(props) {
     const logout = () => {
         localStorage.removeItem("token");
         dispatch({ type: "LOGOUT" });
+
+        // Remove query parameters from url
+        const baseUrl = window.location.href.split("?")[0];
+        window.location.href = baseUrl
     };
 
     const register = (userData) => {
