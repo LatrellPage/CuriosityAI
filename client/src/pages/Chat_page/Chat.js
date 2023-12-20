@@ -173,7 +173,7 @@ const Chat = () => {
 					const response = await openai.chat.completions.create({
 						model: "gpt-3.5-turbo",
 						messages: messagesWithPrompt,
-						temperature: 0.3,
+						temperature: 0.1,
 						max_tokens: 256,
 						top_p: 1,
 						frequency_penalty: 0,
