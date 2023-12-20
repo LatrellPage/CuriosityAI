@@ -1,23 +1,23 @@
-import React, { useReducer, createContext, useRef, useEffect} from "react";
+import React, { useReducer, createContext, useRef, useEffect } from "react";
 import jwtDecode from "jwt-decode";
 
 const initialState = {
-    user: null,
+	user: null,
 };
 
 const token = localStorage.getItem("token");
 if (token) {
-    try {
-        const decodedToken = jwtDecode(token);
-        if (decodedToken.exp * 1000 >= Date.now()) {
-            initialState.user = decodedToken;
-        } else {
-            localStorage.removeItem("token");
-        }
-    } catch (error) {
-        console.error("Error decoding token:", error);
-        localStorage.removeItem("token");
-    }
+	try {
+		const decodedToken = jwtDecode(token);
+		if (decodedToken.exp * 1000 >= Date.now()) {
+			initialState.user = decodedToken;
+		} else {
+			localStorage.removeItem("token");
+		}
+	} catch (error) {
+		console.error("Error decoding token:", error);
+		localStorage.removeItem("token");
+	}
 }
 
 const AuthContext = createContext({
@@ -56,17 +56,21 @@ function authReducer(state, action) {
 }
 
 function AuthProvider(props) {
-    const [state, dispatch] = useReducer(authReducer, initialState);
+	const [state, dispatch] = useReducer(authReducer, initialState);
 
 	const login = (userData) => {
-		if (userData && typeof userData.token === 'string') {
+		if (userData && typeof userData.token === "string") {
 			localStorage.setItem("token", userData.token);
 			try {
 				const decodedToken = jwtDecode(userData.token);
 				dispatch({
 					type: "LOGIN",
-					payload: decodedToken, 
+					payload: decodedToken,
 				});
+
+                // Remove query params from url for a better User friendly url
+				const baseUrl = window.location.href.split("?")[0];
+				window.location.href = baseUrl;
 			} catch (error) {
 				console.error("Error decoding token:", error);
 			}
@@ -74,75 +78,71 @@ function AuthProvider(props) {
 			console.error("Invalid or missing token in userData");
 		}
 	};
-	
 
-    const logout = () => {
-        
-        const baseUrl = window.location.href.split("?")[0];
-        window.location.href = baseUrl
+	const logout = () => {
+		const baseUrl = window.location.href.split("?")[0];
+		window.location.href = baseUrl;
 
-        localStorage.removeItem("token");
-        dispatch({ type: "LOGOUT" });
-        
-        let tokenExist = localStorage.getItem("token");
+		localStorage.removeItem("token");
+		dispatch({ type: "LOGOUT" });
 
-        // double check that token is removed if not removed then remove it
-        if(tokenExist){
-            localStorage.removeItem("token");
-        dispatch({ type: "LOGOUT" });
-        }
+		let tokenExist = localStorage.getItem("token");
 
-        
-    };
-
-    const register = (userData) => {
-        // Clear any existing token in local storage
-        localStorage.removeItem("token");
-
-        // Decode and set the new token, assuming it's part of userData
-        localStorage.setItem("token", userData.token);
-        const decodedToken = jwtDecode(userData.token);
-        dispatch({
-            type: "LOGIN",
-            payload: decodedToken,
-        });
+		// double check that token is removed if not removed then remove it
+		if (tokenExist) {
+			localStorage.removeItem("token");
+			dispatch({ type: "LOGOUT" });
+		}
 	};
 
-    const setUser = () => {
-        const token = localStorage.getItem("token");
-        if (token) {
-            try {
-                const decodedToken = jwtDecode(token);
-                if (decodedToken.exp * 1000 >= Date.now()) {
-                    dispatch({
-                        type: "SET_USER",
-                        payload: decodedToken,
-                    });
-                } else {
-                    dispatch({ type: "LOGOUT" });
-                }
-            } catch (error) {
-                console.error("Error decoding token on useEffect:", error);
-                dispatch({ type: "LOGOUT" });
-            }
-        }
-    };
+	const register = (userData) => {
+		// Clear any existing token in local storage
+		localStorage.removeItem("token");
+
+		// Decode and set the new token, assuming it's part of userData
+		localStorage.setItem("token", userData.token);
+		const decodedToken = jwtDecode(userData.token);
+		dispatch({
+			type: "LOGIN",
+			payload: decodedToken,
+		});
+	};
+
+	const setUser = () => {
+		const token = localStorage.getItem("token");
+		if (token) {
+			try {
+				const decodedToken = jwtDecode(token);
+				if (decodedToken.exp * 1000 >= Date.now()) {
+					dispatch({
+						type: "SET_USER",
+						payload: decodedToken,
+					});
+				} else {
+					dispatch({ type: "LOGOUT" });
+				}
+			} catch (error) {
+				console.error("Error decoding token on useEffect:", error);
+				dispatch({ type: "LOGOUT" });
+			}
+		}
+	};
 
 	const setUserCalled = useRef(false);
 
 	useEffect(() => {
-        if (!setUserCalled.current) {
-            setUser();
-            setUserCalled.current = true;
-        }
-    }, []);
+		if (!setUserCalled.current) {
+			setUser();
+			setUserCalled.current = true;
+		}
+	}, []);
 
-    return (
+	return (
 		<AuthContext.Provider
-		value={{ user: state.user, login, logout, setUser, register }}
-		{...props}
-	/>
-    );
+			value={{ user: state.user, login, logout, setUser, register }}
+			{...props}
+		/>
+	);
 }
 
 export { AuthContext, AuthProvider };
