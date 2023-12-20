@@ -63,11 +63,19 @@ app.get("/api/auth/google", async (req, res) => {
 
 		let user = await User.findOne({ googleId: userInfo.id });
 		if (!user) {
-			user = await User.create({
-				googleId: userInfo.id,
-				email: userInfo.email,
-				name: userInfo.name,
-			});
+			try{
+				user = await User.create({
+					googleId: userInfo.id,
+					email: userInfo.email,
+					name: userInfo.name,
+				});
+			} catch (mongoError){
+				if (mongoError.code === "E11000") {
+					return res.status(400).json({error: "Email already exist in CuriosityAI database."})
+				} else {
+					return res.status(500).json({ error: "Internal server error:", mongoError})
+				}
+			}
 		}
 
 		const jwtToken = jwt.sign(
