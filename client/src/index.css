@@ -252,7 +252,7 @@ input {
 }
 
 .recent-chat:hover {
-	background-color: rgba(0, 0, 0, 0.699);
+	background-color: #666666;
 }
 
 .chat-title {
