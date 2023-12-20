@@ -22,6 +22,7 @@ app.use(cors());
 app.get("/api/auth/google", async (req, res) => {
 	try {
 		const code = req.query.code;
+		console.log("Recieved google auth code:", code);
 
 		const tokenResponse = await fetch(
 			"https://oauth2.googleapis.com/token",
@@ -39,6 +40,7 @@ app.get("/api/auth/google", async (req, res) => {
 				}),
 			}
 		);
+		console.log("Received token response:", tokenResponse)
 
 		const tokenData = await tokenResponse.json();
 		if (tokenData.error) {
@@ -48,6 +50,7 @@ app.get("/api/auth/google", async (req, res) => {
 			);
 			return res.status(400).json(tokenData);
 		}
+		console.log("tokenData:", tokenData)
 
 		const userInfoResponse = await fetch(
 			"https://www.googleapis.com/oauth2/v2/userinfo",
@@ -56,6 +59,7 @@ app.get("/api/auth/google", async (req, res) => {
 			}
 		);
 		const userInfo = await userInfoResponse.json();
+		console.log("Received user info:", userInfo)
 
 		let user = await User.findOne({ googleId: userInfo.id });
 		if (!user) {
